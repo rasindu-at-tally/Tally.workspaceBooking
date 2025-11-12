@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-300;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom styles */
+.desk-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 2rem;
+}
+
+.desk-card {
+  @apply rounded-lg border bg-white p-4 shadow-sm transition-all hover:shadow-md;
+}
+
+.desk-card.available {
+  @apply border-green-200 bg-green-50/50;
+}
+
+.desk-card.booked {
+  @apply border-gray-300 bg-gray-100;
+}
+
+.desk-card.inactive {
+  @apply border-red-200 bg-red-50/50 opacity-60;
+}
+
+.desk-card.selected {
+  @apply border-primary-500 bg-primary-50 ring-2 ring-primary-500;
+}
+
+/* Seating plan specific styles */
+.seating-plan {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.desk-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.desk-6-seater {
+  @apply grid grid-cols-3 gap-2 rounded-lg border-2 p-3;
+}
+
+.desk-4-seater {
+  @apply grid grid-cols-2 gap-2 rounded-lg border-2 p-3;
+}
+
+.seat {
+  @apply flex h-12 w-12 items-center justify-center rounded-md border-2 bg-white text-xs font-medium transition-all;
+}
+
+.seat.available {
+  @apply border-green-500 bg-green-50 hover:bg-green-100 cursor-pointer;
+}
+
+.seat.booked {
+  @apply border-gray-400 bg-gray-200 cursor-not-allowed;
+}
+
+.seat.selected {
+  @apply border-primary-600 bg-primary-100 ring-2 ring-primary-500;
+}
+
