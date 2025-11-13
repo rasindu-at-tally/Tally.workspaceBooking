@@ -6,3 +6,5 @@ from app.models.audit_log import AuditLog
 
 __all__ = ["User", "UserRole", "Desk", "Booking", "BookingStatus", "AuditLog"]
 
+
+

@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     """Application settings"""
     
     # Database
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/office_booking"
+    DATABASE_URL: str = "postgresql://application_user:v1NVSCVXFS1Kg3@localhost:5432/officebooking"
     
     # Security
     SECRET_KEY: str = "your-secret-key-here-change-in-production"
@@ -29,4 +29,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
 

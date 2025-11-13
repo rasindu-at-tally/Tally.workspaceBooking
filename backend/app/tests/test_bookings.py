@@ -133,3 +133,5 @@ def test_get_my_bookings(client, auth_headers, test_user, test_desk, db):
     assert len(data) == 1
     assert data[0]["desk_id"] == str(test_desk.id)
 
+
+

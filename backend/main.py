@@ -8,10 +8,10 @@ from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.api import auth, desks, bookings, audit_logs
+from app.api import auth, desks, bookings, audit_logs, floor_plans
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Note: Database tables are created using Alembic migrations
+# Run: alembic upgrade head
 
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -65,6 +65,7 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(desks.router, prefix="/api")
 app.include_router(bookings.router, prefix="/api")
 app.include_router(audit_logs.router, prefix="/api")
+app.include_router(floor_plans.router)
 
 
 # Global exception handler

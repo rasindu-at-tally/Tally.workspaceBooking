@@ -154,3 +154,5 @@ class DeskService:
         locations = db.query(Desk.location).distinct().order_by(Desk.location).all()
         return [loc[0] for loc in locations]
 
+
+

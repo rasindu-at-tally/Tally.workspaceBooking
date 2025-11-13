@@ -90,7 +90,12 @@ export function Dashboard() {
             <p className="text-lg text-gray-600">No desks available for the selected filters</p>
           </div>
         ) : (
-          <SeatingPlan desks={desks} bookings={bookings} onDeskClick={handleDeskClick} />
+          <SeatingPlan 
+            desks={desks} 
+            bookings={bookings} 
+            onDeskClick={handleDeskClick}
+            selectedLocation={selectedLocation}
+          />
         )}
 
         {/* Booking Modal */}

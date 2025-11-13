@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { LogOut, Calendar, LayoutDashboard, Users, FileText, Settings } from 'lucide-react';
+import { LogOut, Calendar, LayoutDashboard, Users, FileText, Settings, PenTool } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -47,6 +47,17 @@ export function Layout({ children }: LayoutProps) {
                 </Link>
                 {isAdmin && (
                   <>
+                    <Link
+                      to="/admin/floor-plan"
+                      className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                        isActive('/admin/floor-plan')
+                          ? 'bg-primary-50 text-primary-700'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <PenTool className="h-4 w-4" />
+                      Floor Plan
+                    </Link>
                     <Link
                       to="/admin/desks"
                       className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
@@ -102,7 +113,7 @@ export function Layout({ children }: LayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+      <main className="mx-auto px-4 py-8 sm:px-6 lg:px-8" style={{ maxWidth: '1920px' }}>{children}</main>
     </div>
   );
 }

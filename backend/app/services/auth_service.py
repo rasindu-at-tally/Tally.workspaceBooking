@@ -74,3 +74,5 @@ class AuthService:
         """Get user by ID"""
         return db.query(User).filter(User.id == user_id).first()
 
+
+

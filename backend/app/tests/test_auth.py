@@ -72,3 +72,5 @@ def test_get_current_user(client, auth_headers):
     data = response.json()
     assert data["email"] == "test@example.com"
 
+
+

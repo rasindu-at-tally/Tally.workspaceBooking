@@ -75,3 +75,5 @@ rm -f "$PROJECT_ROOT/.pids/backend.log" "$PROJECT_ROOT/.pids/frontend.log"
 echo ""
 echo -e "${GREEN}All servers stopped successfully!${NC}"
 
+
+

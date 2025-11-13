@@ -138,3 +138,5 @@ echo "1. Update backend/.env with your database credentials (if needed)"
 echo "2. Run ./scripts/start.sh to start the application"
 echo ""
 
+
+

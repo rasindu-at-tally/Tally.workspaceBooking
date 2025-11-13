@@ -41,3 +41,5 @@ def get_audit_logs(
     )
     return [AuditLogDetailResponse.model_validate(log) for log in audit_logs]
 
+
+

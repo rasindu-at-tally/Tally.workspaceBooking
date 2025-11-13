@@ -52,3 +52,5 @@ echo -e "${BLUE}Starting application...${NC}"
 echo ""
 bash "$PROJECT_ROOT/scripts/start.sh"
 
+
+

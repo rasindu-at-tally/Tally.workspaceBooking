@@ -51,3 +51,5 @@ python seed_data.py
 echo ""
 echo -e "${GREEN}Database seeded successfully!${NC}"
 
+
+

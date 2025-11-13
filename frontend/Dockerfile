@@ -17,3 +17,5 @@ EXPOSE 5173
 # Run the application
 CMD ["npm", "run", "dev", "--", "--host"]
 
+
+

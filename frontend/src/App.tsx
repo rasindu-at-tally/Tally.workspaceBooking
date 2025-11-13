@@ -7,6 +7,7 @@ import { MyBookings } from '@/pages/MyBookings';
 import { ManageDesks } from '@/pages/admin/ManageDesks';
 import { AllBookings } from '@/pages/admin/AllBookings';
 import { AuditLogs } from '@/pages/admin/AuditLogs';
+import { FloorPlanDesigner } from '@/pages/admin/FloorPlanDesigner';
 import { PrivateRoute } from '@/components/PrivateRoute';
 import { isAuthenticated } from '@/lib/auth';
 
@@ -75,6 +76,14 @@ function App() {
             element={
               <PrivateRoute requireAdmin>
                 <AuditLogs />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/floor-plan"
+            element={
+              <PrivateRoute requireAdmin>
+                <FloorPlanDesigner />
               </PrivateRoute>
             }
           />

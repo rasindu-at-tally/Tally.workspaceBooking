@@ -151,3 +151,5 @@ def get_all_bookings(
     bookings = query.order_by(Booking.created_at.desc()).limit(limit).offset(offset).all()
     return [BookingDetailResponse.model_validate(booking) for booking in bookings]
 
+
+

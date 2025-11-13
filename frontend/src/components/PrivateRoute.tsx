@@ -28,3 +28,5 @@ export function PrivateRoute({ children, requireAdmin = false }: PrivateRoutePro
   return <>{children}</>;
 }
 
+
+

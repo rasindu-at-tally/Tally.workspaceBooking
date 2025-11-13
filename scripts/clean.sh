@@ -89,3 +89,5 @@ echo -e "${GREEN}Clean up completed successfully!${NC}"
 echo ""
 echo "To set up the project again, run: ./scripts/setup.sh"
 
+
+

@@ -54,3 +54,5 @@ class Booking(Base):
     def __repr__(self):
         return f"<Booking {self.id} for desk {self.desk_id} on {self.booking_date}>"
 
+
+

@@ -49,3 +49,5 @@ class BookingDetailResponse(BookingResponse):
     class Config:
         from_attributes = True
 
+
+
