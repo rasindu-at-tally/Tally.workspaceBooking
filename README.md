@@ -4,21 +4,46 @@ A comprehensive office desk booking system built with Python (FastAPI) backend a
 
 ## Features
 
+### Desk Booking
 - 🔐 **Authentication**: Email/password authentication with JWT tokens and role-based access (user/admin)
 - 📅 **Desk Booking**: Browse available desks, book for specific dates with interactive seating plan
 - 🏢 **Multi-Location Support**: Manage desks across different office locations
 - 🚫 **Booking Management**: Users can view and cancel their bookings
-- ⚙️ **Admin Panel**: 
-  - Manage desks (create, edit, activate/deactivate)
-  - View all bookings and cancel on behalf of users
-  - Comprehensive audit logging
 - 🔒 **Business Rules**:
   - One booking per user per day
   - Prevent double-booking with unique constraints
   - Automatic conflict detection with retry logic
   - Transaction-based operations
+
+### Meeting Rooms (NEW!)
+- 🏛️ **Meeting Room Management**: Browse and book meeting rooms with capacity and amenity filters
+- 🤖 **AI-Powered Recommendations**: Intelligent room suggestions based on:
+  - Meeting duration and attendee count
+  - Room capacity matching (prevents oversized room bookings)
+  - Available amenities (projector, video conferencing, whiteboard)
+  - Proximity to your desk location
+- 📅 **MS Teams Integration**: 
+  - Connect your Microsoft Teams calendar (optional)
+  - Automatic detection of meetings requiring physical rooms
+  - Real-time calendar sync with OAuth 2.0
+  - Works in demo mode without MS credentials
+- 🎯 **Smart Features**:
+  - Match scoring (0-100%) with detailed reasoning
+  - One-click booking from recommendations
+  - Real-time availability checking
+  - Automatic conflict detection
+
+### Admin Panel
+- ⚙️ **Desk Management**: Create, edit, activate/deactivate desks
+- 🏛️ **Meeting Room Management**: Full CRUD operations for meeting rooms
+- 📊 **Booking Overview**: View and manage all desk and room bookings
+- 📈 **Audit Logging**: Comprehensive tracking of all system actions
+- 🎨 **Floor Plan Designer**: Interactive floor plan management
+
+### Technical Features
 - 🎨 **Modern UI**: Built with React, TypeScript, Tailwind CSS, and shadcn/ui principles
 - 📊 **Audit Logging**: Track all system actions for compliance
+- 🔒 **Security**: JWT authentication, role-based access control, rate limiting
 
 ## Tech Stack
 
@@ -29,6 +54,8 @@ A comprehensive office desk booking system built with Python (FastAPI) backend a
 - **JWT** authentication with python-jose
 - **Pydantic** for data validation
 - **Rate limiting** with SlowAPI
+- **MSAL** for Microsoft Teams integration
+- **Recommendation Engine** for AI-powered room suggestions
 
 ### Frontend
 - **React 18** with TypeScript
@@ -321,8 +348,61 @@ docker-compose -f docker-compose.prod.yml up -d
 - `FRONTEND_URL`: Frontend URL for CORS
 - `DEFAULT_TIMEZONE`: Default timezone (Australia/Melbourne)
 
+**Microsoft Teams Integration (Optional):**
+- `MS_CLIENT_ID`: Azure AD Application (Client) ID
+- `MS_CLIENT_SECRET`: Azure AD Client Secret
+- `MS_TENANT_ID`: Azure AD Tenant ID (or 'common' for multi-tenant)
+- `MS_REDIRECT_URI`: OAuth callback URL (default: http://localhost:8000/api/teams/callback)
+
 #### Frontend
 - `VITE_API_URL`: Backend API URL
+
+## Microsoft Teams Integration
+
+The application includes optional MS Teams integration for AI-powered meeting room recommendations.
+
+### Demo Mode (No Configuration Required)
+
+The smart recommendations feature works out-of-the-box in demo mode with mock calendar data. No Microsoft credentials needed!
+
+### Production Setup (Optional)
+
+To enable real MS Teams calendar integration:
+
+1. **Register Application in Azure AD**:
+   - Go to [Azure Portal](https://portal.azure.com)
+   - Navigate to Azure Active Directory > App registrations
+   - Click "New registration"
+   - Set redirect URI: `http://localhost:8000/api/teams/callback` (or your production URL)
+
+2. **Configure API Permissions**:
+   - Add the following Microsoft Graph permissions:
+     - `User.Read` (Delegated)
+     - `Calendars.Read` (Delegated)
+     - `OnlineMeetings.Read` (Delegated)
+     - `Presence.Read` (Delegated)
+   - Grant admin consent for your organization
+
+3. **Create Client Secret**:
+   - In your app registration, go to Certificates & secrets
+   - Create a new client secret
+   - Copy the secret value immediately (it won't be shown again)
+
+4. **Update Environment Variables**:
+   ```bash
+   MS_CLIENT_ID=your-client-id-here
+   MS_CLIENT_SECRET=your-client-secret-here
+   MS_TENANT_ID=your-tenant-id-or-common
+   MS_REDIRECT_URI=http://localhost:8000/api/teams/callback
+   ```
+
+5. **Restart the Backend**:
+   ```bash
+   cd backend
+   uvicorn main:app --reload
+   ```
+
+Users can then connect their Microsoft Teams accounts from the "Smart Recommendations" page to get personalized meeting room suggestions based on their actual calendar.
 
 ## Security Features
 

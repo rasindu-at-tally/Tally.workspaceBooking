@@ -8,7 +8,7 @@ from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.api import auth, desks, bookings, audit_logs, floor_plans
+from app.api import auth, desks, bookings, audit_logs, floor_plans, meeting_rooms, room_bookings, ms_teams
 
 # Note: Database tables are created using Alembic migrations
 # Run: alembic upgrade head
@@ -66,6 +66,9 @@ app.include_router(desks.router, prefix="/api")
 app.include_router(bookings.router, prefix="/api")
 app.include_router(audit_logs.router, prefix="/api")
 app.include_router(floor_plans.router)
+app.include_router(meeting_rooms.router, prefix="/api")
+app.include_router(room_bookings.router, prefix="/api")
+app.include_router(ms_teams.router, prefix="/api")
 
 
 # Global exception handler

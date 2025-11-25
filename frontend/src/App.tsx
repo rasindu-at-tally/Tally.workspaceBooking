@@ -8,6 +8,10 @@ import { ManageDesks } from '@/pages/admin/ManageDesks';
 import { AllBookings } from '@/pages/admin/AllBookings';
 import { AuditLogs } from '@/pages/admin/AuditLogs';
 import { FloorPlanDesigner } from '@/pages/admin/FloorPlanDesigner';
+import MeetingRooms from '@/pages/MeetingRooms';
+import MyRoomBookings from '@/pages/MyRoomBookings';
+import SmartRecommendations from '@/pages/SmartRecommendations';
+import ManageMeetingRooms from '@/pages/admin/ManageMeetingRooms';
 import { PrivateRoute } from '@/components/PrivateRoute';
 import { isAuthenticated } from '@/lib/auth';
 
@@ -53,6 +57,30 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/meeting-rooms"
+            element={
+              <PrivateRoute>
+                <MeetingRooms />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/my-room-bookings"
+            element={
+              <PrivateRoute>
+                <MyRoomBookings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/smart-recommendations"
+            element={
+              <PrivateRoute>
+                <SmartRecommendations />
+              </PrivateRoute>
+            }
+          />
 
           {/* Admin routes */}
           <Route
@@ -84,6 +112,14 @@ function App() {
             element={
               <PrivateRoute requireAdmin>
                 <FloorPlanDesigner />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/meeting-rooms"
+            element={
+              <PrivateRoute requireAdmin>
+                <ManageMeetingRooms />
               </PrivateRoute>
             }
           />

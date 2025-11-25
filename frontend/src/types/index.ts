@@ -1,6 +1,7 @@
 export type UserRole = 'user' | 'admin';
 
 export type BookingStatus = 'active' | 'cancelled';
+export type RoomBookingStatus = 'active' | 'cancelled';
 
 export interface User {
   id: string;
@@ -100,6 +101,137 @@ export interface UpdateDeskRequest {
   desk_type?: string;
   description?: string;
   is_active?: boolean;
+}
+
+// Meeting Room Types
+export interface MeetingRoom {
+  id: string;
+  room_name: string;
+  room_number: string;
+  floor: string;
+  capacity: number;
+  has_projector: boolean;
+  has_video_conf: boolean;
+  has_whiteboard: boolean;
+  has_screen_share: boolean;
+  is_active: boolean;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateMeetingRoomRequest {
+  room_name: string;
+  room_number: string;
+  floor: string;
+  capacity: number;
+  has_projector?: boolean;
+  has_video_conf?: boolean;
+  has_whiteboard?: boolean;
+  has_screen_share?: boolean;
+  description?: string;
+}
+
+export interface UpdateMeetingRoomRequest {
+  room_name?: string;
+  room_number?: string;
+  floor?: string;
+  capacity?: number;
+  has_projector?: boolean;
+  has_video_conf?: boolean;
+  has_whiteboard?: boolean;
+  has_screen_share?: boolean;
+  is_active?: boolean;
+  description?: string;
+}
+
+export interface MeetingRoomFilter {
+  floor?: string;
+  min_capacity?: number;
+  has_projector?: boolean;
+  has_video_conf?: boolean;
+  has_whiteboard?: boolean;
+  has_screen_share?: boolean;
+  is_active?: boolean;
+}
+
+// Room Booking Types
+export interface RoomBooking {
+  id: string;
+  room_id: string;
+  user_id: string;
+  start_time: string;
+  end_time: string;
+  meeting_subject?: string;
+  attendee_count?: number;
+  status: RoomBookingStatus;
+  cancelled_at?: string;
+  cancelled_by_user_id?: string;
+  cancellation_reason?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RoomBookingWithDetails extends RoomBooking {
+  room_name?: string;
+  room_number?: string;
+  floor?: string;
+  user_name?: string;
+  user_email?: string;
+}
+
+export interface CreateRoomBookingRequest {
+  room_id: string;
+  start_time: string;
+  end_time: string;
+  meeting_subject?: string;
+  attendee_count?: number;
+}
+
+export interface CancelRoomBookingRequest {
+  cancellation_reason?: string;
+}
+
+export interface RoomAvailabilityRequest {
+  start_time: string;
+  end_time: string;
+}
+
+export interface RoomAvailabilityResponse {
+  room_id: string;
+  start_time: string;
+  end_time: string;
+  is_available: boolean;
+}
+
+// MS Teams Types
+export interface MeetingInfo {
+  subject: string;
+  start: string;
+  end: string;
+  duration: number;
+  attendee_count: number;
+  is_online: boolean;
+  location?: string;
+  online_meeting_url?: string;
+}
+
+export interface RoomRecommendation {
+  room: MeetingRoom;
+  score: number;
+  match_reasons: string[];
+}
+
+export interface MeetingWithRecommendations {
+  meeting: MeetingInfo;
+  recommendations: RoomRecommendation[];
+}
+
+export interface MSTeamsStatus {
+  connected: boolean;
+  expires_at?: string;
+  is_expired?: boolean;
+  demo_mode?: boolean;
 }
 
 

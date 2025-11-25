@@ -23,9 +23,20 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
     
+    # Microsoft Teams / Graph API
+    MS_CLIENT_ID: str = "YOUR_CLIENT_ID_HERE"
+    MS_CLIENT_SECRET: str = "YOUR_CLIENT_SECRET_HERE"
+    MS_TENANT_ID: str = "common"
+    MS_REDIRECT_URI: str = "http://localhost:8000/api/teams/callback"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
+
+
+def get_settings() -> Settings:
+    """Get application settings"""
+    return settings
 
 
 settings = Settings()
