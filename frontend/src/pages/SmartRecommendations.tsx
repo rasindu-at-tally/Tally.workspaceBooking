@@ -3,19 +3,25 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { MeetingWithRecommendations, CreateRoomBookingRequest, MSTeamsStatus } from '../types';
 import { format } from 'date-fns';
+import { useToast } from '@/components/Toast';
+import { getToken } from '@/lib/auth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// Use relative /api paths by default so Vite proxy/production base handles the host + port,
+// but allow overriding with VITE_API_URL for deployments.
+const API_BASE =
+  (import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ?? '';
 
 export default function SmartRecommendations() {
   const queryClient = useQueryClient();
   const [useDemoMode, setUseDemoMode] = useState(true);
+  const { showToast } = useToast();
 
   // Check Teams connection status
   const { data: teamsStatus } = useQuery<MSTeamsStatus>({
     queryKey: ['teams-status'],
     queryFn: async () => {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.get(`${API_URL}/api/teams/status`, {
+      const token = getToken();
+      const { data } = await axios.get(`${API_BASE}/api/teams/status`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return data;
@@ -26,9 +32,9 @@ export default function SmartRecommendations() {
   const { data: meetingsData = [], isLoading } = useQuery({
     queryKey: ['meeting-recommendations', useDemoMode],
     queryFn: async () => {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       const { data } = await axios.get<MeetingWithRecommendations[]>(
-        `${API_URL}/api/teams/meetings/recommendations?use_demo=${useDemoMode}`,
+        `${API_BASE}/api/teams/meetings/recommendations?use_demo=${useDemoMode}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -39,7 +45,7 @@ export default function SmartRecommendations() {
 
   const bookRoomMutation = useMutation({
     mutationFn: async ({ roomId, meeting }: { roomId: string; meeting: any }) => {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       const bookingData: CreateRoomBookingRequest = {
         room_id: roomId,
         start_time: meeting.start,
@@ -48,7 +54,7 @@ export default function SmartRecommendations() {
         attendee_count: meeting.attendee_count,
       };
       await axios.post(
-        `${API_URL}/api/room-bookings`,
+        `${API_BASE}/api/room-bookings`,
         bookingData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -56,24 +62,33 @@ export default function SmartRecommendations() {
       );
     },
     onSuccess: () => {
-      alert('Room booked successfully!');
+      showToast({
+        type: 'success',
+        message: 'Room booked successfully.',
+      });
       queryClient.invalidateQueries({ queryKey: ['my-room-bookings'] });
     },
     onError: (error: any) => {
-      alert(error.response?.data?.detail || 'Failed to book room');
+      showToast({
+        type: 'error',
+        message: error.response?.data?.detail || 'Failed to book room. Please try again.',
+      });
     },
   });
 
   const connectTeams = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.get(`${API_URL}/api/teams/connect`, {
+      const token = getToken();
+      const { data } = await axios.get(`${API_BASE}/api/teams/connect`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       window.location.href = data.auth_url;
     } catch (error: any) {
       if (error.response?.status === 503) {
-        alert('MS Teams integration is not configured. Using demo mode.');
+        showToast({
+          type: 'info',
+          message: 'MS Teams integration is not configured. Using demo mode.',
+        });
         setUseDemoMode(true);
       }
     }

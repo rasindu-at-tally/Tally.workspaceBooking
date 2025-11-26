@@ -11,9 +11,11 @@ import { FloorPlanDesigner } from '@/pages/admin/FloorPlanDesigner';
 import MeetingRooms from '@/pages/MeetingRooms';
 import MyRoomBookings from '@/pages/MyRoomBookings';
 import SmartRecommendations from '@/pages/SmartRecommendations';
+import TeamsMeetings from '@/pages/TeamsMeetings';
 import ManageMeetingRooms from '@/pages/admin/ManageMeetingRooms';
 import { PrivateRoute } from '@/components/PrivateRoute';
 import { isAuthenticated } from '@/lib/auth';
+import { ToastProvider } from '@/components/Toast';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,8 +30,9 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
+      <ToastProvider>
+        <BrowserRouter>
+          <Routes>
           {/* Public routes */}
           <Route
             path="/login"
@@ -81,6 +84,14 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/teams"
+            element={
+              <PrivateRoute>
+                <TeamsMeetings />
+              </PrivateRoute>
+            }
+          />
 
           {/* Admin routes */}
           <Route
@@ -124,10 +135,11 @@ function App() {
             }
           />
 
-          {/* Catch all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+            {/* Catch all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
     </QueryClientProvider>
   );
 }

@@ -11,14 +11,22 @@ settings = get_settings()
 
 
 class MSGraphService:
-    """Microsoft Graph API service for Teams integration"""
-    
-    # Microsoft Graph API Configuration
-    CLIENT_ID = getattr(settings, 'MS_CLIENT_ID', 'YOUR_CLIENT_ID_HERE')
-    CLIENT_SECRET = getattr(settings, 'MS_CLIENT_SECRET', 'YOUR_CLIENT_SECRET_HERE')
-    TENANT_ID = getattr(settings, 'MS_TENANT_ID', 'common')
+    """Microsoft Graph API service for Teams integration.
+
+    Configuration is provided via environment variables (or backend/.env):
+      - MS_CLIENT_ID
+      - MS_CLIENT_SECRET
+      - MS_TENANT_ID
+      - MS_REDIRECT_URI
+    These are loaded through the central Settings object in app.core.config.
+    """
+
+    # Microsoft Graph API Configuration (loaded from env via Settings)
+    CLIENT_ID = settings.MS_CLIENT_ID
+    CLIENT_SECRET = settings.MS_CLIENT_SECRET
+    TENANT_ID = settings.MS_TENANT_ID
     AUTHORITY = f'https://login.microsoftonline.com/{TENANT_ID}'
-    REDIRECT_URI = getattr(settings, 'MS_REDIRECT_URI', 'http://localhost:8000/api/teams/callback')
+    REDIRECT_URI = settings.MS_REDIRECT_URI
     SCOPE = [
         'User.Read',
         'Calendars.Read',
@@ -35,11 +43,8 @@ class MSGraphService:
         self.redirect_uri = self.REDIRECT_URI
     
     def is_configured(self) -> bool:
-        """Check if MS Graph is properly configured"""
-        return (
-            self.CLIENT_ID != 'YOUR_CLIENT_ID_HERE' and
-            self.CLIENT_SECRET != 'YOUR_CLIENT_SECRET_HERE'
-        )
+        """Check if MS Graph is properly configured (values provided in env)."""
+        return bool(self.CLIENT_ID and self.CLIENT_SECRET)
     
     def get_auth_url(self) -> str:
         """Get authorization URL for OAuth flow"""

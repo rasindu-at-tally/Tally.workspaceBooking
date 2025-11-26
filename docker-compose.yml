@@ -26,7 +26,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/office_booking
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/office_booking
       - SECRET_KEY=your-secret-key-here-change-in-production
       - FRONTEND_URL=http://localhost:5173
     depends_on:

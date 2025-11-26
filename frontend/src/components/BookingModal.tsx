@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
-import { bookingSchema, type BookingFormData } from '@/lib/validations';
+import { bookingSchema, type BookingFormData } from '../lib/validations';
 import { useCreateBooking } from '@/hooks/useBookings';
-import { getErrorMessage } from '@/lib/utils';
+import { getErrorMessage } from '../lib/utils';
 import type { Desk } from '@/types';
+import { useToast } from '@/components/Toast';
 
 interface BookingModalProps {
   desk?: Desk;
@@ -17,6 +18,7 @@ interface BookingModalProps {
 export function BookingModal({ desk, selectedDate, isOpen, onClose }: BookingModalProps) {
   const createBooking = useCreateBooking();
   const [error, setError] = useState('');
+  const { showToast } = useToast();
 
   // Helper function to format desk name for display
   const formatDeskName = (deskName: string) => {
@@ -61,6 +63,10 @@ export function BookingModal({ desk, selectedDate, isOpen, onClose }: BookingMod
     try {
       setError('');
       await createBooking.mutateAsync(data);
+      showToast({
+        type: 'success',
+        message: 'Your booking is confirmed.',
+      });
       onClose();
     } catch (err) {
       console.error('[BookingModal] Booking error:', err);

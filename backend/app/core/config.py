@@ -6,7 +6,8 @@ class Settings(BaseSettings):
     """Application settings"""
     
     # Database
-    DATABASE_URL: str = "postgresql://application_user:v1NVSCVXFS1Kg3@localhost:5432/officebooking"
+    # Use psycopg3 driver with SQLAlchemy (postgresql+psycopg)
+    DATABASE_URL: str = "postgresql+psycopg://application_user:v1NVSCVXFS1Kg3@localhost:5432/officebooking"
     
     # Security
     SECRET_KEY: str = "your-secret-key-here-change-in-production"
@@ -27,7 +28,8 @@ class Settings(BaseSettings):
     MS_CLIENT_ID: str = "YOUR_CLIENT_ID_HERE"
     MS_CLIENT_SECRET: str = "YOUR_CLIENT_SECRET_HERE"
     MS_TENANT_ID: str = "common"
-    MS_REDIRECT_URI: str = "http://localhost:8000/api/teams/callback"
+    # Default callback points to the FastAPI teams callback on port 5001
+    MS_REDIRECT_URI: str = "http://localhost:5001/api/teams/callback"
     
     class Config:
         env_file = ".env"

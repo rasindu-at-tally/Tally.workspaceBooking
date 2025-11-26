@@ -57,7 +57,7 @@ We've added 6 powerful bash scripts to make your development life easier:
 ```
 
 **What it does:**
-- Starts backend on http://localhost:8000
+- Starts backend on http://localhost:5001
 - Starts frontend on http://localhost:5173
 - Shows live logs from both
 - Handles graceful shutdown with Ctrl+C
@@ -77,7 +77,7 @@ We've added 6 powerful bash scripts to make your development life easier:
 **What it does:**
 - Stops backend server
 - Stops frontend server
-- Kills any processes on ports 8000 and 5173
+- Kills any processes on ports 5001 and 5173
 - Cleans up PID and log files
 
 **Perfect for:** When you need to stop servers manually
@@ -162,8 +162,8 @@ After starting:
 | Service | URL | Description |
 |---------|-----|-------------|
 | Frontend | http://localhost:5173 | React application |
-| Backend | http://localhost:8000 | FastAPI server |
-| API Docs | http://localhost:8000/api/docs | Swagger UI |
+| Backend | http://localhost:5001 | FastAPI server |
+| API Docs | http://localhost:5001/api/docs | Swagger UI |
 
 ---
 
@@ -228,7 +228,7 @@ chmod +x scripts/*.sh
 ```bash
 ./scripts/stop.sh
 # Or manually:
-lsof -ti:8000 | xargs kill -9
+lsof -ti:5001 | xargs kill -9
 lsof -ti:5173 | xargs kill -9
 ```
 
@@ -282,7 +282,7 @@ dev.sh (Main Entry)
       │   ├── Create .env files
       │   └── Seed database
       └── Then: runs start.sh
-          ├── Start backend (port 8000)
+          ├── Start backend (port 5001)
           ├── Start frontend (port 5173)
           └── Show logs & wait for Ctrl+C
               └── On exit: runs stop.sh

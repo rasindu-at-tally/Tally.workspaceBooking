@@ -2,8 +2,9 @@ from sqlalchemy.orm import Session
 from app.models.floor_plan import FloorPlan
 from app.models.desk import Desk
 from app.schemas.floor_plan import FloorPlanCreate, FloorPlanUpdate
-from typing import Optional
+from typing import Optional, Dict
 import json
+import math
 
 
 class FloorPlanService:
@@ -50,43 +51,124 @@ class FloorPlanService:
     def upsert_floor_plan(
         db: Session, location: str, layout_data: str
     ) -> FloorPlan:
-        """Create or update floor plan for a location and auto-create desk records"""
+        """Create or update floor plan for a location and auto-create desk records.
+
+        Important behaviour:
+        - Each *desk* item in the layout corresponds to ONE desk record in the database.
+        - Any *chair* items are treated as visual parts of that same desk:
+          they are linked to the nearest desk item and share the same desk record.
+        - If a chair has no nearby desk (edge case), we fall back to creating
+          a dedicated desk record so the item remains bookable.
+        """
         # Parse the layout data
         items = json.loads(layout_data)
-        
-        # For each item, ensure it has a corresponding desk record
-        for item in items:
-            item_id = item.get('id')
-            item_type = item.get('type', 'desk')
-            
+
+        # Split items by type for clearer logic
+        desk_items = [item for item in items if item.get("type", "desk") == "desk"]
+        chair_items = [item for item in items if item.get("type", "desk") != "desk"]
+
+        # Map from layout item id -> Desk instance so chairs can link to the same desk
+        item_desk_map: Dict[str, Desk] = {}
+
+        # 1) Ensure each DESK item has a corresponding Desk record
+        for item in desk_items:
+            item_id = item.get("id")
+            item_type = "desk"
+
             # Generate a unique desk name based on item ID
             desk_name = f"{location.replace(' ', '-').upper()}-{item_type.upper()}-{item_id}"
-            
-            # Check if desk already exists
-            existing_desk = db.query(Desk).filter(
-                Desk.name == desk_name,
-                Desk.location == location
-            ).first()
-            
+
+            existing_desk = (
+                db.query(Desk)
+                .filter(Desk.name == desk_name, Desk.location == location)
+                .first()
+            )
+
             if not existing_desk:
-                # Create new desk record
+                position_x = int(item.get("x", 0))
+                position_y = int(item.get("y", 0))
+
                 new_desk = Desk(
                     name=desk_name,
                     location=location,
-                    desk_type="chair" if item_type == "chair" else "single",
-                    is_active=True
+                    position_x=position_x,
+                    position_y=position_y,
+                    desk_type="single",
+                    is_active=True,
                 )
                 db.add(new_desk)
-                db.flush()  # Flush to get the ID
-                
-                # Link the item to the desk
-                item['deskName'] = new_desk.name
-                item['deskId'] = str(new_desk.id)
+                db.flush()
+                desk = new_desk
             else:
-                # Link to existing desk
-                item['deskName'] = existing_desk.name
-                item['deskId'] = str(existing_desk.id)
-        
+                desk = existing_desk
+
+            if item_id:
+                item_desk_map[item_id] = desk
+
+            # Link the desk item itself
+            item["deskName"] = desk.name
+            item["deskId"] = str(desk.id)
+
+        # 2) Link CHAIR items to the nearest DESK item so they share the same Desk record
+        for item in chair_items:
+            item_id = item.get("id")
+            item_x = float(item.get("x", 0))
+            item_y = float(item.get("y", 0))
+
+            nearest_desk_item = None
+            nearest_distance = None
+
+            for desk_item in desk_items:
+                dx = float(desk_item.get("x", 0)) - item_x
+                dy = float(desk_item.get("y", 0)) - item_y
+                distance = math.hypot(dx, dy)
+
+                if nearest_distance is None or distance < nearest_distance:
+                    nearest_distance = distance
+                    nearest_desk_item = desk_item
+
+            linked_desk: Optional[Desk] = None
+
+            # If we found a nearby desk item that already has a Desk record, use it
+            if nearest_desk_item is not None:
+                nearest_id = nearest_desk_item.get("id")
+                if nearest_id and nearest_id in item_desk_map:
+                    linked_desk = item_desk_map[nearest_id]
+
+            # Edge case: no nearby desk found – fall back to creating a dedicated Desk
+            if linked_desk is None:
+                fallback_name = f"{location.replace(' ', '-').upper()}-CHAIR-{item_id}"
+                existing_chair_desk = (
+                    db.query(Desk)
+                    .filter(Desk.name == fallback_name, Desk.location == location)
+                    .first()
+                )
+
+                if not existing_chair_desk:
+                    position_x = int(item.get("x", 0))
+                    position_y = int(item.get("y", 0))
+
+                    new_desk = Desk(
+                        name=fallback_name,
+                        location=location,
+                        position_x=position_x,
+                        position_y=position_y,
+                        desk_type="chair",
+                        is_active=True,
+                    )
+                    db.add(new_desk)
+                    db.flush()
+                    linked_desk = new_desk
+                else:
+                    linked_desk = existing_chair_desk
+
+            # Link chair item to the resolved Desk
+            if linked_desk is not None:
+                item["deskName"] = linked_desk.name
+                item["deskId"] = str(linked_desk.id)
+                if item_id:
+                    item_desk_map[item_id] = linked_desk
+
         # Convert back to JSON with updated desk links
         updated_layout_data = json.dumps(items)
         

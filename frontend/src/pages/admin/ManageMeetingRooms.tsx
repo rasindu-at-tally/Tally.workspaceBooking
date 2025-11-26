@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tantml/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { MeetingRoom, CreateMeetingRoomRequest, UpdateMeetingRoomRequest } from '../../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL =
+  (import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ||
+  'http://localhost:8000';
 
 export default function ManageMeetingRooms() {
   const queryClient = useQueryClient();

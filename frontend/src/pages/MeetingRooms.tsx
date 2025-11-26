@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { MeetingRoom, MeetingRoomFilter } from '../types';
+import { getToken } from '@/lib/auth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE =
+  (import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ?? '';
 
 export default function MeetingRooms() {
   const [filters, setFilters] = useState<MeetingRoomFilter>({
@@ -24,7 +26,7 @@ export default function MeetingRooms() {
       if (filters.is_active !== undefined) params.append('is_active', filters.is_active.toString());
       
       const { data } = await axios.get<MeetingRoom[]>(
-        `${API_URL}/api/meeting-rooms?${params.toString()}`,
+        `${API_BASE}/api/meeting-rooms?${params.toString()}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -38,7 +40,7 @@ export default function MeetingRooms() {
     queryFn: async () => {
       const token = localStorage.getItem('token');
       const { data } = await axios.get<string[]>(
-        `${API_URL}/api/meeting-rooms/floors`,
+        `${API_BASE}/api/meeting-rooms/floors`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

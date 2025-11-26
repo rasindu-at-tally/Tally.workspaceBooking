@@ -4,6 +4,7 @@ import { Layout } from '@/components/Layout';
 import { useMyBookings, useCancelBooking } from '@/hooks/useBookings';
 import { formatDate } from '@/lib/utils';
 import { Calendar, MapPin, XCircle, CheckCircle } from 'lucide-react';
+import { useToast } from '@/components/Toast';
 
 export function MyBookings() {
   const [filter, setFilter] = useState<'all' | 'active' | 'cancelled'>('active');
@@ -12,6 +13,7 @@ export function MyBookings() {
   );
   const cancelBooking = useCancelBooking();
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const handleCancelBooking = async (bookingId: string) => {
     if (!confirm('Are you sure you want to cancel this booking?')) return;
@@ -19,8 +21,15 @@ export function MyBookings() {
     try {
       setCancellingId(bookingId);
       await cancelBooking.mutateAsync({ id: bookingId });
+      showToast({
+        type: 'success',
+        message: 'Booking cancelled successfully.',
+      });
     } catch (error) {
-      alert('Failed to cancel booking. Please try again.');
+      showToast({
+        type: 'error',
+        message: 'Failed to cancel booking. Please try again.',
+      });
     } finally {
       setCancellingId(null);
     }

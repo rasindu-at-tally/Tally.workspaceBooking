@@ -122,8 +122,8 @@ docker-compose exec backend python seed_data.py
 
 4. Access the applications:
    - Frontend: http://localhost:5173
-   - Backend API: http://localhost:8000
-   - API Documentation: http://localhost:8000/api/docs
+   - Backend API: http://localhost:5001
+   - API Documentation: http://localhost:5001/api/docs
 
 ### Option 3: Manual Setup
 
@@ -173,7 +173,7 @@ python seed_data.py
 
 9. Start the backend server:
 ```bash
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --port 5001
 ```
 
 #### Frontend Setup
@@ -190,7 +190,7 @@ npm install
 
 3. Create `.env` file (if needed):
 ```bash
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=http://localhost:5001
 ```
 
 4. Start the development server:
@@ -243,8 +243,8 @@ OfficeBookingPlatform/
 ## API Documentation
 
 When the backend is running, access interactive API documentation at:
-- Swagger UI: http://localhost:8000/api/docs
-- ReDoc: http://localhost:8000/api/redoc
+- Swagger UI: http://localhost:5001/api/docs
+- ReDoc: http://localhost:5001/api/redoc
 
 ## Key API Endpoints
 
@@ -352,7 +352,7 @@ docker-compose -f docker-compose.prod.yml up -d
 - `MS_CLIENT_ID`: Azure AD Application (Client) ID
 - `MS_CLIENT_SECRET`: Azure AD Client Secret
 - `MS_TENANT_ID`: Azure AD Tenant ID (or 'common' for multi-tenant)
-- `MS_REDIRECT_URI`: OAuth callback URL (default: http://localhost:8000/api/teams/callback)
+- `MS_REDIRECT_URI`: OAuth callback URL (default: http://localhost:5001/api/teams/callback)
 
 #### Frontend
 - `VITE_API_URL`: Backend API URL
@@ -373,7 +373,7 @@ To enable real MS Teams calendar integration:
    - Go to [Azure Portal](https://portal.azure.com)
    - Navigate to Azure Active Directory > App registrations
    - Click "New registration"
-   - Set redirect URI: `http://localhost:8000/api/teams/callback` (or your production URL)
+   - Set redirect URI: `http://localhost:5001/api/teams/callback` (or your production URL)
 
 2. **Configure API Permissions**:
    - Add the following Microsoft Graph permissions:
@@ -393,7 +393,7 @@ To enable real MS Teams calendar integration:
    MS_CLIENT_ID=your-client-id-here
    MS_CLIENT_SECRET=your-client-secret-here
    MS_TENANT_ID=your-tenant-id-or-common
-   MS_REDIRECT_URI=http://localhost:8000/api/teams/callback
+   MS_REDIRECT_URI=http://localhost:5001/api/teams/callback
    ```
 
 5. **Restart the Backend**:

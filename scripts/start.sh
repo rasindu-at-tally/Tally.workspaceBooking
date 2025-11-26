@@ -69,18 +69,18 @@ cd "$PROJECT_ROOT/backend"
 source venv/bin/activate
 
 # Check if backend is already running
-if lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null 2>&1; then
-    echo -e "${YELLOW}⚠ Port 8000 is already in use. Stopping existing process...${NC}"
-    lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+if lsof -Pi :5001 -sTCP:LISTEN -t >/dev/null 2>&1; then
+    echo -e "${YELLOW}⚠ Port 5001 is already in use. Stopping existing process...${NC}"
+    lsof -ti:5001 | xargs kill -9 2>/dev/null || true
     sleep 2
 fi
 
 # Start backend in background
-nohup uvicorn main:app --reload --port 8000 > "$PROJECT_ROOT/.pids/backend.log" 2>&1 &
+nohup uvicorn main:app --reload --port 5001 > "$PROJECT_ROOT/.pids/backend.log" 2>&1 &
 BACKEND_PID=$!
 echo $BACKEND_PID > "$PROJECT_ROOT/.pids/backend.pid"
-echo -e "${GREEN}✓ Backend started on http://localhost:8000 (PID: $BACKEND_PID)${NC}"
-echo -e "${GREEN}  API Docs: http://localhost:8000/api/docs${NC}"
+echo -e "${GREEN}✓ Backend started on http://localhost:5001 (PID: $BACKEND_PID)${NC}"
+echo -e "${GREEN}  API Docs: http://localhost:5001/api/docs${NC}"
 
 # Wait a moment for backend to start
 sleep 3
@@ -109,8 +109,8 @@ echo "=================================="
 echo ""
 echo "Access the application:"
 echo -e "  Frontend: ${BLUE}http://localhost:5173${NC}"
-echo -e "  Backend:  ${BLUE}http://localhost:8000${NC}"
-echo -e "  API Docs: ${BLUE}http://localhost:8000/api/docs${NC}"
+echo -e "  Backend:  ${BLUE}http://localhost:5001${NC}"
+echo -e "  API Docs: ${BLUE}http://localhost:5001/api/docs${NC}"
 echo ""
 echo "Test Accounts:"
 echo "  Admin: admin1@office.com / admin123"

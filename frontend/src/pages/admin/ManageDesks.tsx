@@ -3,6 +3,7 @@ import { Layout } from '@/components/Layout';
 import { useDesks, useCreateDesk, useUpdateDesk, useDeleteDesk } from '@/hooks/useDesks';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import type { Desk, CreateDeskRequest } from '@/types';
+import { useToast } from '@/components/Toast';
 
 export function ManageDesks() {
   const { data: desks = [], isLoading } = useDesks();
@@ -21,6 +22,7 @@ export function ManageDesks() {
     description: '',
     is_active: true,
   });
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,8 +33,15 @@ export function ManageDesks() {
         await createDesk.mutateAsync(formData);
       }
       handleCloseForm();
+      showToast({
+        type: 'success',
+        message: editingDesk ? 'Desk updated successfully.' : 'Desk created successfully.',
+      });
     } catch (error) {
-      alert('Failed to save desk');
+      showToast({
+        type: 'error',
+        message: 'Failed to save desk. Please try again.',
+      });
     }
   };
 
@@ -54,8 +63,15 @@ export function ManageDesks() {
     if (!confirm('Are you sure you want to delete this desk?')) return;
     try {
       await deleteDesk.mutateAsync(id);
+      showToast({
+        type: 'success',
+        message: 'Desk deleted successfully.',
+      });
     } catch (error) {
-      alert('Failed to delete desk');
+      showToast({
+        type: 'error',
+        message: 'Failed to delete desk. Please try again.',
+      });
     }
   };
 

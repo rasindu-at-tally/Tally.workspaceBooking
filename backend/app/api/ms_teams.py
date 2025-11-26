@@ -96,9 +96,9 @@ def teams_callback(
         details="Connected Microsoft Teams account"
     )
     
-    # Redirect to frontend success page
+    # Redirect to frontend success page (Teams meetings page)
     frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
-    return RedirectResponse(url=f"{frontend_url}/dashboard?teams_connected=true")
+    return RedirectResponse(url=f"{frontend_url}/teams?teams_connected=true")
 
 
 @router.get("/status")

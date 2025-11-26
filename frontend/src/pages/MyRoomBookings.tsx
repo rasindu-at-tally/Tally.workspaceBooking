@@ -2,8 +2,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { RoomBookingWithDetails } from '../types';
 import { format } from 'date-fns';
+import { getToken } from '@/lib/auth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE =
+  (import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ?? '';
 
 export default function MyRoomBookings() {
   const queryClient = useQueryClient();
@@ -11,9 +13,9 @@ export default function MyRoomBookings() {
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['my-room-bookings'],
     queryFn: async () => {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       const { data } = await axios.get<RoomBookingWithDetails[]>(
-        `${API_URL}/api/room-bookings/my-bookings`,
+        `${API_BASE}/api/room-bookings/my-bookings`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -24,9 +26,9 @@ export default function MyRoomBookings() {
 
   const cancelMutation = useMutation({
     mutationFn: async (bookingId: string) => {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       await axios.post(
-        `${API_URL}/api/room-bookings/${bookingId}/cancel`,
+        `${API_BASE}/api/room-bookings/${bookingId}/cancel`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

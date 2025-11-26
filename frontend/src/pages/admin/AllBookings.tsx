@@ -3,12 +3,14 @@ import { Layout } from '@/components/Layout';
 import { useAllBookings, useCancelBooking } from '@/hooks/useBookings';
 import { formatDate } from '@/lib/utils';
 import { XCircle } from 'lucide-react';
+import { useToast } from '@/components/Toast';
 
 export function AllBookings() {
   const [filter, setFilter] = useState<{ status?: 'active' | 'cancelled' }>({});
   const { data: bookings = [], isLoading } = useAllBookings(filter);
   const cancelBooking = useCancelBooking();
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const handleCancelBooking = async (bookingId: string) => {
     if (!confirm('Are you sure you want to cancel this booking as an admin?')) return;
@@ -20,7 +22,10 @@ export function AllBookings() {
         data: { cancellation_reason: 'Cancelled by admin' },
       });
     } catch (error) {
-      alert('Failed to cancel booking');
+      showToast({
+        type: 'error',
+        message: 'Failed to cancel booking. Please try again.',
+      });
     } finally {
       setCancellingId(null);
     }

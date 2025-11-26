@@ -1,7 +1,8 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { Stage, Layer, Rect, Text, Group } from 'react-konva';
 import type { Desk, BookingDetail } from '@/types';
 import { floorPlansApi, FloorPlanItem } from '@/lib/api/floorPlans';
+import { useToast } from '@/components/Toast';
 
 interface SeatingPlanProps {
   desks: Desk[];
@@ -15,11 +16,13 @@ function DeskKonva({
   item,
   desk,
   isBooked,
+  bookedBy,
   onClick
 }: { 
   item: FloorPlanItem;
   desk?: Desk;
   isBooked: boolean;
+  bookedBy?: string;
   onClick: () => void;
 }) {
   const isActive = desk?.is_active ?? true;
@@ -76,12 +79,23 @@ function DeskKonva({
       {/* Label */}
       <Text
         x={10}
-        y={18}
+        y={12}
         text={desk?.name || item.deskName || 'Desk'}
         fontSize={14}
         fontStyle="bold"
         fill="#fff"
       />
+      {/* Booked by info */}
+      {isBooked && bookedBy && (
+        <Text
+          x={10}
+          y={32}
+          text={`Booked by ${bookedBy}`}
+          fontSize={11}
+          fontStyle="normal"
+          fill="#e5e7eb"
+        />
+      )}
     </Group>
   );
 }
@@ -91,11 +105,13 @@ function ChairKonva({
   item,
   desk,
   isBooked,
+  bookedBy,
   onClick
 }: { 
   item: FloorPlanItem;
   desk?: Desk;
   isBooked: boolean;
+  bookedBy?: string;
   onClick: () => void;
 }) {
   const isActive = desk?.is_active ?? true;
@@ -164,11 +180,22 @@ function ChairKonva({
       {desk && (
         <Text
           x={5}
-          y={28}
+          y={18}
           text={desk.name}
           fontSize={8}
           fontStyle="bold"
           fill="#fff"
+        />
+      )}
+      {/* Booked by info (small, below the chair) */}
+      {isBooked && bookedBy && (
+        <Text
+          x={0}
+          y={32}
+          text={bookedBy}
+          fontSize={7}
+          fontStyle="normal"
+          fill="#e5e7eb"
         />
       )}
     </Group>
@@ -179,9 +206,22 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
   const [floorPlanItems, setFloorPlanItems] = useState<FloorPlanItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasFloorPlan, setHasFloorPlan] = useState(false);
+  const [stageScale, setStageScale] = useState(1);
+  const canvasContainerRef = useRef<HTMLDivElement | null>(null);
+  const { showToast } = useToast();
 
   const bookedDeskIds = useMemo(() => {
     return new Set(bookings.map((b) => b.desk_id));
+  }, [bookings]);
+
+  // Map of desk_id -> booking detail for showing who booked the desk
+  const bookingByDeskId = useMemo(() => {
+    const map = new Map<string, BookingDetail>();
+    bookings.forEach((b) => {
+      // Prefer the latest booking for a desk if multiple exist
+      map.set(b.desk_id, b);
+    });
+    return map;
   }, [bookings]);
 
   // Create a map of desk names to desk objects
@@ -190,6 +230,26 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
     desks.forEach(desk => map.set(desk.name, desk));
     return map;
   }, [desks]);
+
+  // Make the seating canvas responsive by scaling to the container width
+  useEffect(() => {
+    const updateScale = () => {
+      const container = canvasContainerRef.current;
+      if (!container) return;
+
+      const containerWidth = container.offsetWidth;
+      const targetWidth = 1800; // logical canvas width
+
+      if (!containerWidth) return;
+
+      const scale = Math.min(containerWidth / targetWidth, 1);
+      setStageScale(scale);
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   // Load floor plan for the selected location
   useEffect(() => {
@@ -213,6 +273,10 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
         } else {
           console.error('[SeatingPlan] Error loading floor plan:', error);
           setHasFloorPlan(false);
+          showToast({
+            type: 'error',
+            message: 'Something went wrong loading the seating plan. Please try again.',
+          });
         }
       } finally {
         setIsLoading(false);
@@ -251,8 +315,16 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
       <h2 className="mb-6 text-xl font-semibold text-gray-900">Office Seating Plan</h2>
       
       {/* Canvas Floor Plan */}
-      <div className="bg-gray-100 rounded-lg p-4 overflow-auto">
-        <Stage width={1800} height={900}>
+      <div
+        ref={canvasContainerRef}
+        className="bg-gray-100 rounded-lg p-2 sm:p-4 overflow-auto"
+      >
+        <Stage
+          width={1800}
+          height={900}
+          scaleX={stageScale}
+          scaleY={stageScale}
+        >
           <Layer>
             {/* Grid background */}
             {Array.from({ length: 36 }).map((_, i) => (
@@ -280,12 +352,18 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
             {floorPlanItems.map((item) => {
               const desk = item.deskName ? deskMap.get(item.deskName) : undefined;
               const isBooked = desk ? bookedDeskIds.has(desk.id) : false;
+              const booking = desk ? bookingByDeskId.get(desk.id) : undefined;
+              const bookedBy =
+                booking?.user?.full_name || booking?.user?.email || undefined;
               
               const handleClick = () => {
                 if (desk) {
                   onDeskClick(desk);
                 } else {
-                  alert(`This ${item.type} is not available for booking. Please contact admin.`);
+                  showToast({
+                    type: 'info',
+                    message: `This ${item.type} is not available for booking. Please contact an administrator.`,
+                  });
                 }
               };
               
@@ -296,6 +374,7 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
                     item={item}
                     desk={desk}
                     isBooked={isBooked}
+                    bookedBy={bookedBy}
                     onClick={handleClick}
                   />
                 );
@@ -306,6 +385,7 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
                     item={item}
                     desk={desk}
                     isBooked={isBooked}
+                    bookedBy={bookedBy}
                     onClick={handleClick}
                   />
                 );

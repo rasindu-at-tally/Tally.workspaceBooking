@@ -4,11 +4,9 @@ import { Layout } from '@/components/Layout';
 import { Trash2, Save, Undo, Armchair, RectangleHorizontal, Download } from 'lucide-react';
 import { floorPlansApi, FloorPlanItem } from '@/lib/api/floorPlans';
 import { useLocations } from '@/hooks/useDesks';
+import { useToast } from '@/components/Toast';
 
-interface FloorItem extends FloorPlanItem {
-  deskName?: string;
-  deskId?: number;
-}
+type FloorItem = FloorPlanItem;
 
 // Desk Component - Realistic office desk
 function DeskItem({ 
@@ -277,11 +275,14 @@ export function FloorPlanDesigner() {
   const [items, setItems] = useState<FloorItem[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 1800, height: 900 });
+  const [stageScale, setStageScale] = useState(1);
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const stageRef = useRef<any>(null);
+  const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const { data: locations = [] } = useLocations();
+  const { showToast } = useToast();
 
   const addDesk = () => {
     const newDesk: FloorItem = {
@@ -334,6 +335,26 @@ export function FloorPlanDesigner() {
     ));
   };
 
+  // Make the designer canvas responsive by scaling to container width
+  useEffect(() => {
+    const updateScale = () => {
+      const container = canvasContainerRef.current;
+      if (!container) return;
+
+      const containerWidth = container.offsetWidth;
+      const targetWidth = canvasSize.width;
+
+      if (!containerWidth) return;
+
+      const scale = Math.min(containerWidth / targetWidth, 1);
+      setStageScale(scale);
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, [canvasSize.width]);
+
   // Load floor plan for selected location
   const loadFloorPlan = async (location: string) => {
     if (!location) return;
@@ -351,7 +372,10 @@ export function FloorPlanDesigner() {
         setSelectedId(null);
       } else {
         console.error('Error loading floor plan:', error);
-        alert('Failed to load floor plan');
+        showToast({
+          type: 'error',
+          message: 'Failed to load floor plan. Please try again.',
+        });
       }
     } finally {
       setIsLoading(false);
@@ -367,7 +391,10 @@ export function FloorPlanDesigner() {
 
   const saveLayout = async () => {
     if (!selectedLocation) {
-      alert('Please select a location first');
+      showToast({
+        type: 'info',
+        message: 'Please select a location before saving the layout.',
+      });
       return;
     }
 
@@ -382,11 +409,17 @@ export function FloorPlanDesigner() {
       
       // Reload the floor plan to get the updated data with desk links
       await loadFloorPlan(selectedLocation);
-      
-      alert(`Floor plan saved successfully! ${items.length} items (desks/chairs) are now bookable.`);
+
+      showToast({
+        type: 'success',
+        message: `Floor plan saved! ${items.length} items are now bookable.`,
+      });
     } catch (error) {
       console.error('Error saving floor plan:', error);
-      alert('Failed to save floor plan');
+      showToast({
+        type: 'error',
+        message: 'Failed to save floor plan. Please try again.',
+      });
     } finally {
       setIsSaving(false);
     }
@@ -529,11 +562,16 @@ export function FloorPlanDesigner() {
               </div>
             </div>
           ) : (
-            <div className="bg-gray-100 rounded-lg overflow-auto" style={{ height: '900px' }}>
+            <div
+              ref={canvasContainerRef}
+              className="bg-gray-100 rounded-lg overflow-auto h-[60vh] sm:h-[70vh]"
+            >
               <Stage
                 ref={stageRef}
                 width={canvasSize.width}
                 height={canvasSize.height}
+                scaleX={stageScale}
+                scaleY={stageScale}
                 onMouseDown={checkDeselect}
                 onTouchStart={checkDeselect}
               >
