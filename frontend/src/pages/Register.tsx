@@ -1,17 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { useAuth } from '@/hooks/useAuth';
 import { registerSchema, type RegisterFormData } from '@/lib/validations';
 import { getErrorMessage } from '@/lib/utils';
-import { Mail, Lock, User, UserPlus, LogIn, AlertCircle, CheckCircle2, Building2, Calendar } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, LogIn, AlertCircle, CheckCircle2, Building2, Calendar, MapPin } from 'lucide-react';
+
+const API_BASE =
+  (import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ?? '';
 
 export function Register() {
   const navigate = useNavigate();
   const { register: registerUser } = useAuth();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [locations, setLocations] = useState<string[]>([]);
+
+  // Fetch locations on mount
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const { data } = await axios.get<string[]>(`${API_BASE}/api/auth/locations`);
+        setLocations(data);
+      } catch (err) {
+        console.error('Failed to fetch locations:', err);
+      }
+    };
+    fetchLocations();
+  }, []);
 
   const {
     register,
@@ -196,6 +214,33 @@ export function Register() {
                     <p className="mt-2 flex items-center gap-1 text-sm text-red-600">
                       <AlertCircle className="h-4 w-4" />
                       {errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="location" className="block text-sm font-semibold text-slate-700 mb-2">
+                    Office Location
+                  </label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                    <select
+                      {...register('location')}
+                      id="location"
+                      className="block w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-slate-800 transition-all focus:border-cyan-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    >
+                      <option value="">Select your office location</option>
+                      {locations.map((location) => (
+                        <option key={location} value={location}>
+                          {location}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {errors.location && (
+                    <p className="mt-2 flex items-center gap-1 text-sm text-red-600">
+                      <AlertCircle className="h-4 w-4" />
+                      {errors.location.message}
                     </p>
                   )}
                 </div>

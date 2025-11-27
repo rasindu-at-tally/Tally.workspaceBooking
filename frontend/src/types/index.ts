@@ -73,6 +73,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   full_name: string;
+  location?: string;
 }
 
 export interface CreateBookingRequest {

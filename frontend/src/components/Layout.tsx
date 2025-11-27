@@ -32,11 +32,11 @@ export function Layout({ children }: LayoutProps) {
           {/* Logo Section */}
           <div className="flex flex-col items-center justify-center py-6 border-b border-white/10 px-6">
             <Link to="/" className="flex flex-col items-center group">
-              <img
+                <img
                 src="https://demopublic.blob.core.windows.net/assets/tally-logo.svg"
-                alt="tallygroup"
+                  alt="tallygroup"
                 className="h-14 w-auto rounded-lg transition-transform group-hover:scale-105 mb-2"
-              />
+                />
               <span className="text-md font-bold text-white tracking-tight">Workspace</span>
               <span className="text-[10px] font-medium uppercase tracking-widest text-cyan-200/70">Booking System</span>
             </Link>
@@ -61,7 +61,7 @@ export function Layout({ children }: LayoutProps) {
                   <Calendar className="h-5 w-5 flex-shrink-0" />
                   <span className="flex-1">My Bookings</span>
                   {isActive('/my-bookings') && <ChevronRight className="h-4 w-4 opacity-60" />}
-                </Link>
+              </Link>
                 <Link to="/meeting-rooms" className={navLinkClass('/meeting-rooms')}>
                   <DoorOpen className="h-5 w-5 flex-shrink-0" />
                   <span className="flex-1">Meeting Rooms</span>
@@ -92,7 +92,7 @@ export function Layout({ children }: LayoutProps) {
             </div>
 
             {/* Admin Section */}
-            {isAdmin && (
+                {isAdmin && (
               <div>
                 <p className="mb-3 flex items-center gap-2 px-4 text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-200/60">
                   <span className="h-px flex-1 bg-gradient-to-r from-cyan-200/20 to-transparent" />
@@ -104,26 +104,26 @@ export function Layout({ children }: LayoutProps) {
                     <PenTool className="h-5 w-5 flex-shrink-0" />
                     <span className="flex-1">Floor Plan</span>
                     {isActive('/admin/floor-plan') && <ChevronRight className="h-4 w-4 opacity-60" />}
-                  </Link>
+                    </Link>
                   <Link to="/admin/desks" className={navLinkClass('/admin/desks')}>
                     <Settings className="h-5 w-5 flex-shrink-0" />
                     <span className="flex-1">Manage Desks</span>
                     {isActive('/admin/desks') && <ChevronRight className="h-4 w-4 opacity-60" />}
-                  </Link>
+                    </Link>
                   <Link to="/admin/bookings" className={navLinkClass('/admin/bookings')}>
                     <Users className="h-5 w-5 flex-shrink-0" />
                     <span className="flex-1">All Bookings</span>
                     {isActive('/admin/bookings') && <ChevronRight className="h-4 w-4 opacity-60" />}
-                  </Link>
+                    </Link>
                   <Link to="/admin/audit-logs" className={navLinkClass('/admin/audit-logs')}>
                     <FileText className="h-5 w-5 flex-shrink-0" />
                     <span className="flex-1">Audit Logs</span>
                     {isActive('/admin/audit-logs') && <ChevronRight className="h-4 w-4 opacity-60" />}
-                  </Link>
+                    </Link>
                 </div>
               </div>
-            )}
-          </nav>
+                )}
+              </nav>
 
           {/* User Profile & Logout */}
           <div className="border-t border-white/10 p-4">
@@ -136,7 +136,7 @@ export function Layout({ children }: LayoutProps) {
                 <div className="flex-1 min-w-0">
                   <div className="truncate text-sm font-semibold text-white">{user?.full_name}</div>
                   <div className="truncate text-xs text-cyan-200/70">{user?.email}</div>
-                </div>
+            </div>
               </div>
               {/* User Location Badge */}
               {user?.location && (
@@ -154,15 +154,15 @@ export function Layout({ children }: LayoutProps) {
             </div>
             
             {/* Logout Button */}
-            <button
-              onClick={logout}
+              <button
+                onClick={logout}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 px-4 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-red-500/80 hover:shadow-lg hover:shadow-red-500/20"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </button>
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
+            </div>
           </div>
-        </div>
       </aside>
 
       {/* Custom Scrollbar Styles */}

@@ -1,4 +1,5 @@
 """Authentication routes"""
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -6,6 +7,7 @@ from app.core.database import get_db
 from app.core.security import get_current_user
 from app.schemas.user import UserCreate, UserLogin, TokenResponse, UserResponse
 from app.services.auth_service import AuthService
+from app.services.desk_service import DeskService
 from app.models.user import User
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
@@ -28,6 +30,12 @@ def login(login_data: UserLogin, db: Session = Depends(get_db)):
 def get_current_user_info(current_user: User = Depends(get_current_user)):
     """Get current user information"""
     return UserResponse.model_validate(current_user)
+
+
+@router.get("/locations", response_model=List[str])
+def get_public_locations(db: Session = Depends(get_db)):
+    """Get all available locations for registration (public endpoint)"""
+    return DeskService.get_locations(db)
 
 
 

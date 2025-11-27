@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -7,14 +7,17 @@ import { Layout } from '@/components/Layout';
 import { RoomBookingModal } from '@/components/RoomBookingModal';
 import { MapPin, Users, Monitor, Video, PenLine, Cast, Search, SlidersHorizontal, Calendar, CheckCircle, XCircle } from 'lucide-react';
 import { getToken } from '@/lib/auth';
+import { useAuth } from '@/hooks/useAuth';
 
 const API_BASE =
   (import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ?? '';
 
 export default function MeetingRooms() {
+  const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [selectedRoom, setSelectedRoom] = useState<MeetingRoom | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [locationInitialized, setLocationInitialized] = useState(false);
   const [filters, setFilters] = useState<MeetingRoomFilter>({
     is_active: true,
   });
@@ -52,7 +55,7 @@ export default function MeetingRooms() {
       const endOfDay = `${selectedDate}T23:59:59`;
       
       const { data } = await axios.get<RoomBooking[]>(
-        `${API_BASE}/api/room-bookings?start_date=${startOfDay}&end_date=${endOfDay}&status=active`,
+        `${API_BASE}/api/room-bookings?start_date=${startOfDay}&end_date=${endOfDay}&status_filter=active`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -62,19 +65,50 @@ export default function MeetingRooms() {
   });
 
   // Fetch locations for filter dropdown
-  const { data: locations = [] } = useQuery({
+  const { data: locations = [], error: locationsError } = useQuery({
     queryKey: ['meeting-room-locations'],
     queryFn: async () => {
       const token = getToken();
-      const { data } = await axios.get<string[]>(
-        `${API_BASE}/api/meeting-rooms/locations`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return data;
+      if (!token) {
+        console.error('No auth token available for locations request');
+        return [];
+      }
+      try {
+        const { data } = await axios.get<string[]>(
+          `${API_BASE}/api/meeting-rooms/locations`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        return data;
+      } catch (error: any) {
+        console.error('Error fetching locations:', error.response?.data || error.message);
+        throw error;
+      }
     },
+    retry: 1,
   });
+
+  // Log any location fetch errors
+  if (locationsError) {
+    console.error('Locations query error:', locationsError);
+  }
+
+  // Auto-select user's location if they have one assigned (not admin with all locations access)
+  useEffect(() => {
+    if (!locationInitialized && locations.length > 0 && user) {
+      // If user has a specific location assigned and it's in the available locations, select it
+      if (user.location && locations.includes(user.location)) {
+        setFilters(prev => ({ ...prev, location: user.location }));
+      }
+      // If user has no location (admin with all access) or only one location available, 
+      // leave as "All Locations" or auto-select the single location
+      else if (locations.length === 1) {
+        setFilters(prev => ({ ...prev, location: locations[0] }));
+      }
+      setLocationInitialized(true);
+    }
+  }, [locations, user, locationInitialized]);
 
   // Check if a room is booked for the selected date
   const isRoomBooked = (roomId: string) => {

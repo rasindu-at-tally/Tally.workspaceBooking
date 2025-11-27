@@ -263,6 +263,7 @@ def get_meeting_recommendations(
     
     # Get user's current desk booking for proximity scoring
     from app.models.booking import Booking, BookingStatus
+    from app.models.user import UserRole
     today = datetime.now().date()
     user_booking = db.query(Booking).filter(
         Booking.user_id == current_user.id,
@@ -272,10 +273,15 @@ def get_meeting_recommendations(
     
     user_desk_id = str(user_booking.desk_id) if user_booking else None
     
+    # Get user's location for filtering (admins without location can see all)
+    user_location = None
+    if current_user.role != UserRole.ADMIN or current_user.location:
+        user_location = current_user.location
+    
     meetings_with_recommendations = []
     for meeting in meetings:
         meeting_info = MeetingInfo(**meeting)
-        recommendations = recommender.recommend_rooms(meeting_info, user_desk_id)
+        recommendations = recommender.recommend_rooms(meeting_info, user_desk_id, user_location)
         
         meetings_with_recommendations.append({
             'meeting': meeting_info.model_dump(),

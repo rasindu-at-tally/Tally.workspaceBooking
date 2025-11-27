@@ -522,7 +522,7 @@ def seed_database():
             Booking(
                 id=uuid.uuid4(),
                 user_id=user1.id,
-                desk_id=sydney_desks[0].id,
+                desk_id=brisbane_desks[0].id,
                 booking_date=today,
                 status=BookingStatus.ACTIVE,
             )
@@ -532,7 +532,7 @@ def seed_database():
             Booking(
                 id=uuid.uuid4(),
                 user_id=user2.id,
-                desk_id=sydney_desks[1].id,
+                desk_id=brisbane_desks[1].id,
                 booking_date=today,
                 status=BookingStatus.ACTIVE,
             )
@@ -562,7 +562,7 @@ def seed_database():
         cancelled_booking = Booking(
             id=uuid.uuid4(),
             user_id=user2.id,
-            desk_id=sydney_desks[2].id,
+            desk_id=brisbane_desks[2].id,
             booking_date=today - timedelta(days=1),
             status=BookingStatus.CANCELLED,
             cancelled_by_user_id=user2.id,
@@ -575,7 +575,7 @@ def seed_database():
             Booking(
                 id=uuid.uuid4(),
                 user_id=user1.id,
-                desk_id=sydney_desks[3].id,
+                desk_id=brisbane_desks[3].id,
                 booking_date=today - timedelta(days=7),
                 status=BookingStatus.ACTIVE,
             )

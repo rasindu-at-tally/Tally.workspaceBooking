@@ -26,7 +26,8 @@ class RoomRecommendationService:
     def recommend_rooms(
         self,
         meeting: MeetingInfo,
-        user_desk_id: Optional[str] = None
+        user_desk_id: Optional[str] = None,
+        user_location: Optional[str] = None
     ) -> List[RoomRecommendation]:
         """
         Recommend meeting rooms for a given meeting
@@ -34,12 +35,13 @@ class RoomRecommendationService:
         Args:
             meeting: Meeting information
             user_desk_id: User's current desk booking (for proximity scoring)
+            user_location: User's assigned location (for filtering rooms)
         
         Returns:
             List of recommended rooms with scores
         """
-        # Get all available meeting rooms
-        available_rooms = self._get_available_rooms(meeting.start, meeting.end)
+        # Get all available meeting rooms, filtered by user location if applicable
+        available_rooms = self._get_available_rooms(meeting.start, meeting.end, user_location)
         
         if not available_rooms:
             return []
@@ -67,7 +69,8 @@ class RoomRecommendationService:
     def _get_available_rooms(
         self,
         start_time: datetime,
-        end_time: datetime
+        end_time: datetime,
+        user_location: Optional[str] = None
     ) -> List[MeetingRoom]:
         """Get meeting rooms that are available for the time slot"""
         # Find rooms that don't have conflicting bookings
@@ -94,12 +97,19 @@ class RoomRecommendationService:
             )
         ).subquery()
         
+        # Build filter conditions
+        filter_conditions = [
+            MeetingRoom.is_active == True,
+            ~MeetingRoom.id.in_(conflicting_bookings)
+        ]
+        
+        # Filter by user's location if they have one assigned
+        if user_location:
+            filter_conditions.append(MeetingRoom.location == user_location)
+        
         # Get rooms that are active and not in conflicting bookings
         available_rooms = self.db.query(MeetingRoom).filter(
-            and_(
-                MeetingRoom.is_active == True,
-                ~MeetingRoom.id.in_(conflicting_bookings)
-            )
+            and_(*filter_conditions)
         ).order_by(MeetingRoom.capacity).all()
         
         return available_rooms

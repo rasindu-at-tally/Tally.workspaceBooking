@@ -31,6 +31,7 @@ class AuthService:
             full_name=user_data.full_name,
             hashed_password=hashed_password,
             role=user_data.role,
+            location=user_data.location,
         )
         
         db.add(db_user)

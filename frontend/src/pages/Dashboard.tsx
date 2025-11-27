@@ -1,19 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Layout } from '@/components/Layout';
 import { SeatingPlan } from '@/components/SeatingPlan';
 import { BookingModal } from '@/components/BookingModal';
 import { useDesks, useLocations } from '@/hooks/useDesks';
 import { useBookingsByDate } from '@/hooks/useBookings';
+import { useAuth } from '@/hooks/useAuth';
 import type { Desk } from '@/types';
 
 export function Dashboard() {
+  const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedDesk, setSelectedDesk] = useState<Desk | undefined>();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [locationInitialized, setLocationInitialized] = useState(false);
 
   const { data: locations = [] } = useLocations();
+
+  // Auto-select user's location if they have one assigned
+  useEffect(() => {
+    if (!locationInitialized && locations.length > 0 && user) {
+      // If user has a specific location assigned and it's in the available locations, select it
+      if (user.location && locations.includes(user.location)) {
+        setSelectedLocation(user.location);
+      }
+      // If only one location available, auto-select it
+      else if (locations.length === 1) {
+        setSelectedLocation(locations[0]);
+      }
+      setLocationInitialized(true);
+    }
+  }, [locations, user, locationInitialized]);
   const { data: desks = [], isLoading: desksLoading } = useDesks(
     selectedLocation || undefined,
     true
