@@ -31,15 +31,15 @@ function SingleSeatDeskKonva({
 }) {
   const isActive = desk?.is_active ?? true;
   const isClickable = isActive && !isBooked;
-  const width = 60;
-  const height = 50;
+  const width = 80;
+  const height = 60;
 
   const colors = {
-    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
-    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
-    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#22c55e',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#86efac',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#16a34a',
     badge: '#06b6d4',
-    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#166534',
   };
 
   return (
@@ -67,25 +67,25 @@ function SingleSeatDeskKonva({
       <Rect x={2} y={2} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
       
       {/* Chair indicator */}
-      <Circle x={width / 2} y={height + 12} radius={8} fill={colors.chair} />
+      <Circle x={width / 2} y={height + 14} radius={10} fill={colors.chair} />
       
       {/* Seat count badge */}
-      <Circle x={width - 5} y={5} radius={8} fill={colors.badge} />
-      <Text x={width - 9} y={1} text="1" fontSize={10} fontStyle="bold" fill="#fff" />
+      <Circle x={width - 8} y={8} radius={10} fill={colors.badge} />
+      <Text x={width - 12} y={3} text="1" fontSize={12} fontStyle="bold" fill="#fff" />
       
       {/* Label */}
       <Text
-        x={3}
-        y={height / 2 - 12}
-        text={desk?.name?.substring(0, 6) || item.deskName?.substring(0, 6) || 'Desk'}
-        fontSize={8}
+        x={5}
+        y={height / 2 - 14}
+        text={desk?.name || item.deskName || 'Desk'}
+        fontSize={11}
         fontStyle="bold"
         fill={colors.text}
       />
       
       {/* Booked by */}
       {isBooked && bookedBy && (
-        <Text x={3} y={height / 2} text={bookedBy.substring(0, 8)} fontSize={7} fill="#6b7280" />
+        <Text x={5} y={height / 2 + 2} text={bookedBy.substring(0, 10)} fontSize={9} fill="#6b7280" />
       )}
     </Group>
   );
@@ -99,15 +99,15 @@ function TwoSeatDeskKonva({
 }) {
   const isActive = desk?.is_active ?? true;
   const isClickable = isActive && !isBooked;
-  const width = 100;
-  const height = 50;
+  const width = 120;
+  const height = 60;
 
   const colors = {
-    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
-    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
-    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#22c55e',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#86efac',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#16a34a',
     badge: '#06b6d4',
-    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#166534',
   };
 
   return (
@@ -122,15 +122,15 @@ function TwoSeatDeskKonva({
       <Rect x={width / 2 - 0.5} y={5} width={1} height={height - 10} fill={colors.desk} />
       
       {/* Chairs */}
-      <Circle x={width / 4} y={height + 12} radius={8} fill={colors.chair} />
-      <Circle x={(width / 4) * 3} y={height + 12} radius={8} fill={colors.chair} />
+      <Circle x={width / 4} y={height + 14} radius={10} fill={colors.chair} />
+      <Circle x={(width / 4) * 3} y={height + 14} radius={10} fill={colors.chair} />
       
       {/* Badge */}
-      <Circle x={width - 5} y={5} radius={8} fill={colors.badge} />
-      <Text x={width - 9} y={1} text="2" fontSize={10} fontStyle="bold" fill="#fff" />
+      <Circle x={width - 8} y={8} radius={10} fill={colors.badge} />
+      <Text x={width - 12} y={3} text="2" fontSize={12} fontStyle="bold" fill="#fff" />
       
-      <Text x={3} y={height / 2 - 12} text={desk?.name?.substring(0, 10) || item.deskName?.substring(0, 10) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
-      {isBooked && bookedBy && <Text x={3} y={height / 2} text={bookedBy.substring(0, 12)} fontSize={7} fill="#6b7280" />}
+      <Text x={5} y={height / 2 - 14} text={desk?.name || item.deskName || 'Desk'} fontSize={11} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={5} y={height / 2 + 2} text={bookedBy.substring(0, 12)} fontSize={9} fill="#6b7280" />}
     </Group>
   );
 }
@@ -143,15 +143,15 @@ function ThreeSeatDeskKonva({
 }) {
   const isActive = desk?.is_active ?? true;
   const isClickable = isActive && !isBooked;
-  const width = 140;
-  const height = 50;
+  const width = 160;
+  const height = 60;
 
   const colors = {
-    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
-    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
-    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#22c55e',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#86efac',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#16a34a',
     badge: '#06b6d4',
-    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#166534',
   };
 
   return (
@@ -167,16 +167,16 @@ function ThreeSeatDeskKonva({
       <Rect x={(width / 3) * 2 - 0.5} y={5} width={1} height={height - 10} fill={colors.desk} />
       
       {/* Chairs */}
-      <Circle x={width / 6} y={height + 12} radius={8} fill={colors.chair} />
-      <Circle x={width / 2} y={height + 12} radius={8} fill={colors.chair} />
-      <Circle x={(width / 6) * 5} y={height + 12} radius={8} fill={colors.chair} />
+      <Circle x={width / 6} y={height + 14} radius={10} fill={colors.chair} />
+      <Circle x={width / 2} y={height + 14} radius={10} fill={colors.chair} />
+      <Circle x={(width / 6) * 5} y={height + 14} radius={10} fill={colors.chair} />
       
       {/* Badge */}
-      <Circle x={width - 5} y={5} radius={8} fill={colors.badge} />
-      <Text x={width - 9} y={1} text="3" fontSize={10} fontStyle="bold" fill="#fff" />
+      <Circle x={width - 8} y={8} radius={10} fill={colors.badge} />
+      <Text x={width - 12} y={3} text="3" fontSize={12} fontStyle="bold" fill="#fff" />
       
-      <Text x={3} y={height / 2 - 12} text={desk?.name?.substring(0, 14) || item.deskName?.substring(0, 14) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
-      {isBooked && bookedBy && <Text x={3} y={height / 2} text={bookedBy.substring(0, 16)} fontSize={7} fill="#6b7280" />}
+      <Text x={5} y={height / 2 - 14} text={desk?.name || item.deskName || 'Desk'} fontSize={11} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={5} y={height / 2 + 2} text={bookedBy.substring(0, 16)} fontSize={9} fill="#6b7280" />}
     </Group>
   );
 }
@@ -189,15 +189,15 @@ function FourSeatDeskKonva({
 }) {
   const isActive = desk?.is_active ?? true;
   const isClickable = isActive && !isBooked;
-  const width = 100;
-  const height = 70;
+  const width = 120;
+  const height = 80;
 
   const colors = {
-    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
-    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
-    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#22c55e',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#86efac',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#16a34a',
     badge: '#06b6d4',
-    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#166534',
   };
 
   return (
@@ -207,24 +207,24 @@ function FourSeatDeskKonva({
       onTap={isClickable ? onClick : undefined}
       opacity={isClickable ? 1 : 0.7}
     >
-      <Rect y={15} width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
-      <Rect x={2} y={17} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
-      <Rect x={width / 2 - 0.5} y={20} width={1} height={height - 10} fill={colors.desk} />
-      <Rect x={5} y={15 + height / 2 - 0.5} width={width - 10} height={1} fill={colors.desk} />
+      <Rect y={18} width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
+      <Rect x={2} y={20} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
+      <Rect x={width / 2 - 0.5} y={23} width={1} height={height - 10} fill={colors.desk} />
+      <Rect x={5} y={18 + height / 2 - 0.5} width={width - 10} height={1} fill={colors.desk} />
       
       {/* Top chairs */}
-      <Circle x={width / 4} y={5} radius={8} fill={colors.chair} />
-      <Circle x={(width / 4) * 3} y={5} radius={8} fill={colors.chair} />
+      <Circle x={width / 4} y={6} radius={10} fill={colors.chair} />
+      <Circle x={(width / 4) * 3} y={6} radius={10} fill={colors.chair} />
       {/* Bottom chairs */}
-      <Circle x={width / 4} y={height + 25} radius={8} fill={colors.chair} />
-      <Circle x={(width / 4) * 3} y={height + 25} radius={8} fill={colors.chair} />
+      <Circle x={width / 4} y={height + 30} radius={10} fill={colors.chair} />
+      <Circle x={(width / 4) * 3} y={height + 30} radius={10} fill={colors.chair} />
       
       {/* Badge */}
-      <Circle x={width - 5} y={20} radius={8} fill={colors.badge} />
-      <Text x={width - 9} y={16} text="4" fontSize={10} fontStyle="bold" fill="#fff" />
+      <Circle x={width - 8} y={26} radius={10} fill={colors.badge} />
+      <Text x={width - 12} y={21} text="4" fontSize={12} fontStyle="bold" fill="#fff" />
       
-      <Text x={3} y={15 + height / 2 - 12} text={desk?.name?.substring(0, 10) || item.deskName?.substring(0, 10) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
-      {isBooked && bookedBy && <Text x={3} y={15 + height / 2} text={bookedBy.substring(0, 12)} fontSize={7} fill="#6b7280" />}
+      <Text x={5} y={18 + height / 2 - 14} text={desk?.name || item.deskName || 'Desk'} fontSize={11} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={5} y={18 + height / 2 + 2} text={bookedBy.substring(0, 12)} fontSize={9} fill="#6b7280" />}
     </Group>
   );
 }
@@ -237,15 +237,15 @@ function SixSeatDeskKonva({
 }) {
   const isActive = desk?.is_active ?? true;
   const isClickable = isActive && !isBooked;
-  const width = 150;
-  const height = 60;
+  const width = 180;
+  const height = 70;
 
   const colors = {
-    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
-    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
-    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#22c55e',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#86efac',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#16a34a',
     badge: '#06b6d4',
-    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#166534',
   };
 
   return (
@@ -255,24 +255,24 @@ function SixSeatDeskKonva({
       onTap={isClickable ? onClick : undefined}
       opacity={isClickable ? 1 : 0.7}
     >
-      <Rect y={15} width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
-      <Rect x={2} y={17} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
+      <Rect y={18} width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
+      <Rect x={2} y={20} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
       
       {/* Top chairs */}
-      <Circle x={width / 6} y={5} radius={8} fill={colors.chair} />
-      <Circle x={width / 2} y={5} radius={8} fill={colors.chair} />
-      <Circle x={(width / 6) * 5} y={5} radius={8} fill={colors.chair} />
+      <Circle x={width / 6} y={6} radius={10} fill={colors.chair} />
+      <Circle x={width / 2} y={6} radius={10} fill={colors.chair} />
+      <Circle x={(width / 6) * 5} y={6} radius={10} fill={colors.chair} />
       {/* Bottom chairs */}
-      <Circle x={width / 6} y={height + 25} radius={8} fill={colors.chair} />
-      <Circle x={width / 2} y={height + 25} radius={8} fill={colors.chair} />
-      <Circle x={(width / 6) * 5} y={height + 25} radius={8} fill={colors.chair} />
+      <Circle x={width / 6} y={height + 30} radius={10} fill={colors.chair} />
+      <Circle x={width / 2} y={height + 30} radius={10} fill={colors.chair} />
+      <Circle x={(width / 6) * 5} y={height + 30} radius={10} fill={colors.chair} />
       
       {/* Badge */}
-      <Circle x={width - 5} y={20} radius={8} fill={colors.badge} />
-      <Text x={width - 9} y={16} text="6" fontSize={10} fontStyle="bold" fill="#fff" />
+      <Circle x={width - 8} y={26} radius={10} fill={colors.badge} />
+      <Text x={width - 12} y={21} text="6" fontSize={12} fontStyle="bold" fill="#fff" />
       
-      <Text x={3} y={15 + height / 2 - 12} text={desk?.name?.substring(0, 16) || item.deskName?.substring(0, 16) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
-      {isBooked && bookedBy && <Text x={3} y={15 + height / 2} text={bookedBy.substring(0, 18)} fontSize={7} fill="#6b7280" />}
+      <Text x={5} y={18 + height / 2 - 14} text={desk?.name || item.deskName || 'Desk'} fontSize={11} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={5} y={18 + height / 2 + 2} text={bookedBy.substring(0, 18)} fontSize={9} fill="#6b7280" />}
     </Group>
   );
 }
@@ -513,11 +513,11 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
       {/* Legend */}
       <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-6 bg-stone-400 rounded border-2 border-cyan-500"></div>
+          <div className="w-8 h-6 bg-green-500 rounded border-2 border-cyan-500"></div>
           <span className="text-gray-600">Available</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-6 bg-gray-300 rounded border border-gray-400"></div>
+          <div className="w-8 h-6 bg-gray-400 rounded border border-gray-500"></div>
           <span className="text-gray-600">Booked</span>
         </div>
         <div className="flex items-center gap-2">
@@ -525,7 +525,7 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
           <span className="text-gray-600">Inactive</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+          <div className="w-4 h-4 bg-green-600 rounded-full"></div>
           <span className="text-gray-600">Chair/Seat</span>
         </div>
         <div className="flex items-center gap-2">

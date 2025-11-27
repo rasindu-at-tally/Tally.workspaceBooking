@@ -61,23 +61,12 @@ export function Layout({ children }: LayoutProps) {
                   <Calendar className="h-5 w-5 flex-shrink-0" />
                   <span className="flex-1">My Bookings</span>
                   {isActive('/my-bookings') && <ChevronRight className="h-4 w-4 opacity-60" />}
-              </Link>
+                </Link>
                 <Link to="/meeting-rooms" className={navLinkClass('/meeting-rooms')}>
                   <DoorOpen className="h-5 w-5 flex-shrink-0" />
                   <span className="flex-1">Meeting Rooms</span>
                   {isActive('/meeting-rooms') && <ChevronRight className="h-4 w-4 opacity-60" />}
                 </Link>
-              </div>
-            </div>
-
-            {/* Smart Features Section */}
-            <div className="mb-6">
-              <p className="mb-3 flex items-center gap-2 px-4 text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-200/60">
-                <span className="h-px flex-1 bg-gradient-to-r from-cyan-200/20 to-transparent" />
-                Smart
-                <span className="h-px flex-1 bg-gradient-to-l from-cyan-200/20 to-transparent" />
-              </p>
-              <div className="space-y-1">
                 <Link to="/teams" className={navLinkClass('/teams')}>
                   <Video className="h-5 w-5 flex-shrink-0" />
                   <span className="flex-1">Teams Meetings</span>

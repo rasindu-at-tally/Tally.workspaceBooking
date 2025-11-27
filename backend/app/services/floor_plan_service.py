@@ -7,6 +7,21 @@ import json
 import math
 
 
+# Location short codes mapping
+LOCATION_SHORT_CODES = {
+    "Melbourne": "MELB",
+    "Brisbane": "BRIS",
+    "Auckland": "AUCK",
+    "Hyderabad": "HYD",
+    "Sydney": "SYD",
+}
+
+
+def get_location_short_code(location: str) -> str:
+    """Get short code for a location. Falls back to first 4 chars uppercase if not mapped."""
+    return LOCATION_SHORT_CODES.get(location, location[:4].upper())
+
+
 class FloorPlanService:
     @staticmethod
     def create_floor_plan(db: Session, floor_plan: FloorPlanCreate) -> FloorPlan:
@@ -73,10 +88,11 @@ class FloorPlanService:
         # 1) Ensure each DESK item has a corresponding Desk record
         for item in desk_items:
             item_id = item.get("id")
-            item_type = "desk"
 
-            # Generate a unique desk name based on item ID
-            desk_name = f"{location.replace(' ', '-').upper()}-{item_type.upper()}-{item_id}"
+            # Generate a unique desk name using location short code
+            # Format: MELB-1, MELB-2, etc. (or MELB-001 if padded)
+            location_code = get_location_short_code(location)
+            desk_name = f"{location_code}-{item_id}"
 
             existing_desk = (
                 db.query(Desk)
@@ -137,7 +153,8 @@ class FloorPlanService:
 
             # Edge case: no nearby desk found – fall back to creating a dedicated Desk
             if linked_desk is None:
-                fallback_name = f"{location.replace(' ', '-').upper()}-CHAIR-{item_id}"
+                location_code = get_location_short_code(location)
+                fallback_name = f"{location_code}-{item_id}"
                 existing_chair_desk = (
                     db.query(Desk)
                     .filter(Desk.name == fallback_name, Desk.location == location)

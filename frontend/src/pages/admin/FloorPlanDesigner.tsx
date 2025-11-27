@@ -22,8 +22,8 @@ function SingleSeatDesk({
   onSelect: () => void; 
   onChange: (newAttrs: Partial<FloorItem>) => void;
 }) {
-  const width = 60;
-  const height = 50;
+  const width = 80;
+  const height = 60;
   
   return (
     <Group
@@ -44,8 +44,8 @@ function SingleSeatDesk({
       <Rect
         width={width}
         height={height}
-        fill="#78716c"
-        stroke={isSelected ? '#06b6d4' : '#57534e'}
+        fill="#22c55e"
+        stroke={isSelected ? '#06b6d4' : '#16a34a'}
         strokeWidth={isSelected ? 3 : 1}
         cornerRadius={4}
         shadowColor="black"
@@ -60,32 +60,32 @@ function SingleSeatDesk({
         y={2}
         width={width - 4}
         height={height - 4}
-        fill="#a8a29e"
+        fill="#86efac"
         cornerRadius={3}
       />
       
       {/* Chair indicator */}
       <Circle
         x={width / 2}
-        y={height + 12}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
+        y={height + 14}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
         strokeWidth={1}
       />
       
       {/* Seat count badge */}
       <Circle
-        x={width - 5}
-        y={5}
-        radius={8}
+        x={width - 8}
+        y={8}
+        radius={10}
         fill="#06b6d4"
       />
       <Text
-        x={width - 9}
-        y={1}
+        x={width - 12}
+        y={3}
         text="1"
-        fontSize={10}
+        fontSize={12}
         fontStyle="bold"
         fill="#fff"
       />
@@ -93,10 +93,10 @@ function SingleSeatDesk({
       {/* Label */}
       {item.deskName && (
         <Text
-          x={3}
-          y={height / 2 - 5}
-          text={item.deskName.length > 6 ? item.deskName.substring(0, 6) : item.deskName}
-          fontSize={9}
+          x={5}
+          y={height / 2 - 6}
+          text={item.deskName}
+          fontSize={11}
           fontStyle="bold"
           fill="#374151"
         />
@@ -117,8 +117,8 @@ function TwoSeatDesk({
   onSelect: () => void; 
   onChange: (newAttrs: Partial<FloorItem>) => void;
 }) {
-  const width = 100;
-  const height = 50;
+  const width = 120;
+  const height = 60;
   
   return (
     <Group
@@ -139,8 +139,8 @@ function TwoSeatDesk({
       <Rect
         width={width}
         height={height}
-        fill="#78716c"
-        stroke={isSelected ? '#06b6d4' : '#57534e'}
+        fill="#22c55e"
+        stroke={isSelected ? '#06b6d4' : '#16a34a'}
         strokeWidth={isSelected ? 3 : 1}
         cornerRadius={4}
         shadowColor="black"
@@ -155,7 +155,7 @@ function TwoSeatDesk({
         y={2}
         width={width - 4}
         height={height - 4}
-        fill="#a8a29e"
+        fill="#86efac"
         cornerRadius={3}
       />
       
@@ -165,39 +165,39 @@ function TwoSeatDesk({
         y={5}
         width={1}
         height={height - 10}
-        fill="#78716c"
+        fill="#22c55e"
       />
       
       {/* Chair indicators */}
       <Circle
         x={width / 4}
-        y={height + 12}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
+        y={height + 14}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
         strokeWidth={1}
       />
       <Circle
         x={(width / 4) * 3}
-        y={height + 12}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
+        y={height + 14}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
         strokeWidth={1}
       />
       
       {/* Seat count badge */}
       <Circle
-        x={width - 5}
-        y={5}
-        radius={8}
+        x={width - 8}
+        y={8}
+        radius={10}
         fill="#06b6d4"
       />
       <Text
-        x={width - 9}
-        y={1}
+        x={width - 12}
+        y={3}
         text="2"
-        fontSize={10}
+        fontSize={12}
         fontStyle="bold"
         fill="#fff"
       />
@@ -205,10 +205,10 @@ function TwoSeatDesk({
       {/* Label */}
       {item.deskName && (
         <Text
-          x={3}
-          y={height / 2 - 5}
-          text={item.deskName.length > 10 ? item.deskName.substring(0, 10) : item.deskName}
-          fontSize={9}
+          x={5}
+          y={height / 2 - 6}
+          text={item.deskName}
+          fontSize={11}
           fontStyle="bold"
           fill="#374151"
         />
@@ -229,8 +229,8 @@ function ThreeSeatDesk({
   onSelect: () => void; 
   onChange: (newAttrs: Partial<FloorItem>) => void;
 }) {
-  const width = 140;
-  const height = 50;
+  const width = 160;
+  const height = 60;
   
   return (
     <Group
@@ -251,8 +251,8 @@ function ThreeSeatDesk({
       <Rect
         width={width}
         height={height}
-        fill="#78716c"
-        stroke={isSelected ? '#06b6d4' : '#57534e'}
+        fill="#22c55e"
+        stroke={isSelected ? '#06b6d4' : '#16a34a'}
         strokeWidth={isSelected ? 3 : 1}
         cornerRadius={4}
         shadowColor="black"
@@ -267,7 +267,7 @@ function ThreeSeatDesk({
         y={2}
         width={width - 4}
         height={height - 4}
-        fill="#a8a29e"
+        fill="#86efac"
         cornerRadius={3}
       />
       
@@ -277,54 +277,54 @@ function ThreeSeatDesk({
         y={5}
         width={1}
         height={height - 10}
-        fill="#78716c"
+        fill="#22c55e"
       />
       <Rect
         x={(width / 3) * 2 - 0.5}
         y={5}
         width={1}
         height={height - 10}
-        fill="#78716c"
+        fill="#22c55e"
       />
       
       {/* Chair indicators */}
       <Circle
         x={width / 6}
-        y={height + 12}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
+        y={height + 14}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
         strokeWidth={1}
       />
       <Circle
         x={width / 2}
-        y={height + 12}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
+        y={height + 14}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
         strokeWidth={1}
       />
       <Circle
         x={(width / 6) * 5}
-        y={height + 12}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
+        y={height + 14}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
         strokeWidth={1}
       />
       
       {/* Seat count badge */}
       <Circle
-        x={width - 5}
-        y={5}
-        radius={8}
+        x={width - 8}
+        y={8}
+        radius={10}
         fill="#06b6d4"
       />
       <Text
-        x={width - 9}
-        y={1}
+        x={width - 12}
+        y={3}
         text="3"
-        fontSize={10}
+        fontSize={12}
         fontStyle="bold"
         fill="#fff"
       />
@@ -332,10 +332,10 @@ function ThreeSeatDesk({
       {/* Label */}
       {item.deskName && (
         <Text
-          x={3}
-          y={height / 2 - 5}
-          text={item.deskName.length > 14 ? item.deskName.substring(0, 14) : item.deskName}
-          fontSize={9}
+          x={5}
+          y={height / 2 - 6}
+          text={item.deskName}
+          fontSize={11}
           fontStyle="bold"
           fill="#374151"
         />
@@ -356,7 +356,145 @@ function FourSeatDesk({
   onSelect: () => void; 
   onChange: (newAttrs: Partial<FloorItem>) => void;
 }) {
-  const width = 100;
+  const width = 120;
+  const height = 80;
+  
+  return (
+    <Group
+      x={item.x}
+      y={item.y}
+      draggable
+      rotation={item.rotation}
+      onClick={onSelect}
+      onTap={onSelect}
+      onDragEnd={(e) => {
+        onChange({
+          x: e.target.x(),
+          y: e.target.y(),
+        });
+      }}
+    >
+      {/* Desk surface */}
+      <Rect
+        y={15}
+        width={width}
+        height={height}
+        fill="#22c55e"
+        stroke={isSelected ? '#06b6d4' : '#16a34a'}
+        strokeWidth={isSelected ? 3 : 1}
+        cornerRadius={4}
+        shadowColor="black"
+        shadowBlur={4}
+        shadowOpacity={0.2}
+        shadowOffset={{ x: 2, y: 2 }}
+      />
+      
+      {/* Desk top */}
+      <Rect
+        x={2}
+        y={17}
+        width={width - 4}
+        height={height - 4}
+        fill="#86efac"
+        cornerRadius={3}
+      />
+      
+      {/* Cross divider */}
+      <Rect
+        x={width / 2 - 0.5}
+        y={20}
+        width={1}
+        height={height - 10}
+        fill="#22c55e"
+      />
+      <Rect
+        x={5}
+        y={15 + height / 2 - 0.5}
+        width={width - 10}
+        height={1}
+        fill="#22c55e"
+      />
+      
+      {/* Top chairs */}
+      <Circle
+        x={width / 4}
+        y={6}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
+        strokeWidth={1}
+      />
+      <Circle
+        x={(width / 4) * 3}
+        y={6}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
+        strokeWidth={1}
+      />
+      
+      {/* Bottom chairs */}
+      <Circle
+        x={width / 4}
+        y={height + 30}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
+        strokeWidth={1}
+      />
+      <Circle
+        x={(width / 4) * 3}
+        y={height + 30}
+        radius={10}
+        fill="#16a34a"
+        stroke={isSelected ? '#06b6d4' : '#15803d'}
+        strokeWidth={1}
+      />
+      
+      {/* Seat count badge */}
+      <Circle
+        x={width - 8}
+        y={24}
+        radius={10}
+        fill="#06b6d4"
+      />
+      <Text
+        x={width - 12}
+        y={19}
+        text="4"
+        fontSize={12}
+        fontStyle="bold"
+        fill="#fff"
+      />
+      
+      {/* Label */}
+      {item.deskName && (
+        <Text
+          x={5}
+          y={18 + height / 2 - 6}
+          text={item.deskName}
+          fontSize={11}
+          fontStyle="bold"
+          fill="#374151"
+        />
+      )}
+    </Group>
+  );
+}
+
+// Six Seat Desk Component - Conference style (3 on each side)
+function SixSeatDesk({ 
+  item, 
+  isSelected, 
+  onSelect, 
+  onChange 
+}: { 
+  item: FloorItem; 
+  isSelected: boolean; 
+  onSelect: () => void; 
+  onChange: (newAttrs: Partial<FloorItem>) => void;
+}) {
+  const width = 180;
   const height = 70;
   
   return (
@@ -379,8 +517,8 @@ function FourSeatDesk({
         y={15}
         width={width}
         height={height}
-        fill="#78716c"
-        stroke={isSelected ? '#06b6d4' : '#57534e'}
+        fill="#22c55e"
+        stroke={isSelected ? '#06b6d4' : '#16a34a'}
         strokeWidth={isSelected ? 3 : 1}
         cornerRadius={4}
         shadowColor="black"
@@ -395,169 +533,31 @@ function FourSeatDesk({
         y={17}
         width={width - 4}
         height={height - 4}
-        fill="#a8a29e"
-        cornerRadius={3}
-      />
-      
-      {/* Cross divider */}
-      <Rect
-        x={width / 2 - 0.5}
-        y={20}
-        width={1}
-        height={height - 10}
-        fill="#78716c"
-      />
-      <Rect
-        x={5}
-        y={15 + height / 2 - 0.5}
-        width={width - 10}
-        height={1}
-        fill="#78716c"
-      />
-      
-      {/* Top chairs */}
-      <Circle
-        x={width / 4}
-        y={5}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
-        strokeWidth={1}
-      />
-      <Circle
-        x={(width / 4) * 3}
-        y={5}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
-        strokeWidth={1}
-      />
-      
-      {/* Bottom chairs */}
-      <Circle
-        x={width / 4}
-        y={height + 25}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
-        strokeWidth={1}
-      />
-      <Circle
-        x={(width / 4) * 3}
-        y={height + 25}
-        radius={8}
-        fill="#3b82f6"
-        stroke={isSelected ? '#06b6d4' : '#2563eb'}
-        strokeWidth={1}
-      />
-      
-      {/* Seat count badge */}
-      <Circle
-        x={width - 5}
-        y={20}
-        radius={8}
-        fill="#06b6d4"
-      />
-      <Text
-        x={width - 9}
-        y={16}
-        text="4"
-        fontSize={10}
-        fontStyle="bold"
-        fill="#fff"
-      />
-      
-      {/* Label */}
-      {item.deskName && (
-        <Text
-          x={3}
-          y={15 + height / 2 - 5}
-          text={item.deskName.length > 10 ? item.deskName.substring(0, 10) : item.deskName}
-          fontSize={9}
-          fontStyle="bold"
-          fill="#374151"
-        />
-      )}
-    </Group>
-  );
-}
-
-// Six Seat Desk Component - Conference style (3 on each side)
-function SixSeatDesk({ 
-  item, 
-  isSelected, 
-  onSelect, 
-  onChange 
-}: { 
-  item: FloorItem; 
-  isSelected: boolean; 
-  onSelect: () => void; 
-  onChange: (newAttrs: Partial<FloorItem>) => void;
-}) {
-  const width = 150;
-  const height = 60;
-  
-  return (
-    <Group
-      x={item.x}
-      y={item.y}
-      draggable
-      rotation={item.rotation}
-      onClick={onSelect}
-      onTap={onSelect}
-      onDragEnd={(e) => {
-        onChange({
-          x: e.target.x(),
-          y: e.target.y(),
-        });
-      }}
-    >
-      {/* Desk surface */}
-      <Rect
-        y={15}
-        width={width}
-        height={height}
-        fill="#78716c"
-        stroke={isSelected ? '#06b6d4' : '#57534e'}
-        strokeWidth={isSelected ? 3 : 1}
-        cornerRadius={4}
-        shadowColor="black"
-        shadowBlur={4}
-        shadowOpacity={0.2}
-        shadowOffset={{ x: 2, y: 2 }}
-      />
-      
-      {/* Desk top */}
-      <Rect
-        x={2}
-        y={17}
-        width={width - 4}
-        height={height - 4}
-        fill="#a8a29e"
+        fill="#86efac"
         cornerRadius={3}
       />
       
       {/* Top chairs */}
-      <Circle x={width / 6} y={5} radius={8} fill="#3b82f6" stroke={isSelected ? '#06b6d4' : '#2563eb'} strokeWidth={1} />
-      <Circle x={width / 2} y={5} radius={8} fill="#3b82f6" stroke={isSelected ? '#06b6d4' : '#2563eb'} strokeWidth={1} />
-      <Circle x={(width / 6) * 5} y={5} radius={8} fill="#3b82f6" stroke={isSelected ? '#06b6d4' : '#2563eb'} strokeWidth={1} />
+      <Circle x={width / 6} y={6} radius={10} fill="#16a34a" stroke={isSelected ? '#06b6d4' : '#15803d'} strokeWidth={1} />
+      <Circle x={width / 2} y={6} radius={10} fill="#16a34a" stroke={isSelected ? '#06b6d4' : '#15803d'} strokeWidth={1} />
+      <Circle x={(width / 6) * 5} y={6} radius={10} fill="#16a34a" stroke={isSelected ? '#06b6d4' : '#15803d'} strokeWidth={1} />
       
       {/* Bottom chairs */}
-      <Circle x={width / 6} y={height + 25} radius={8} fill="#3b82f6" stroke={isSelected ? '#06b6d4' : '#2563eb'} strokeWidth={1} />
-      <Circle x={width / 2} y={height + 25} radius={8} fill="#3b82f6" stroke={isSelected ? '#06b6d4' : '#2563eb'} strokeWidth={1} />
-      <Circle x={(width / 6) * 5} y={height + 25} radius={8} fill="#3b82f6" stroke={isSelected ? '#06b6d4' : '#2563eb'} strokeWidth={1} />
+      <Circle x={width / 6} y={height + 30} radius={10} fill="#16a34a" stroke={isSelected ? '#06b6d4' : '#15803d'} strokeWidth={1} />
+      <Circle x={width / 2} y={height + 30} radius={10} fill="#16a34a" stroke={isSelected ? '#06b6d4' : '#15803d'} strokeWidth={1} />
+      <Circle x={(width / 6) * 5} y={height + 30} radius={10} fill="#16a34a" stroke={isSelected ? '#06b6d4' : '#15803d'} strokeWidth={1} />
       
       {/* Seat count badge */}
-      <Circle x={width - 5} y={20} radius={8} fill="#06b6d4" />
-      <Text x={width - 9} y={16} text="6" fontSize={10} fontStyle="bold" fill="#fff" />
+      <Circle x={width - 8} y={24} radius={10} fill="#06b6d4" />
+      <Text x={width - 12} y={19} text="6" fontSize={12} fontStyle="bold" fill="#fff" />
       
       {/* Label */}
       {item.deskName && (
         <Text
-          x={3}
-          y={15 + height / 2 - 5}
-          text={item.deskName.length > 16 ? item.deskName.substring(0, 16) : item.deskName}
-          fontSize={9}
+          x={5}
+          y={18 + height / 2 - 6}
+          text={item.deskName}
+          fontSize={11}
           fontStyle="bold"
           fill="#374151"
         />
@@ -580,8 +580,12 @@ export function FloorPlanDesigner() {
   const { showToast } = useToast();
 
   const addDesk = (seats: number) => {
+    // Generate a simple sequential ID based on existing desk count
+    const existingDeskCount = items.filter(item => item.type === 'desk').length;
+    const newDeskNumber = existingDeskCount + 1;
+    
     const newDesk: FloorItem = {
-      id: `desk-${seats}seat-${Date.now()}`,
+      id: String(newDeskNumber),  // e.g., "1", "2", "3" -> results in MELB-1, MELB-2, etc.
       type: 'desk',
       x: 100 + (items.length * 30) % 400,
       y: 100 + (items.length * 30) % 300,
@@ -926,11 +930,11 @@ export function FloorPlanDesigner() {
           <h3 className="font-semibold text-gray-900 mb-3">Legend</h3>
           <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-6 bg-stone-400 rounded border border-stone-500"></div>
+              <div className="w-8 h-6 bg-green-500 rounded border border-green-600"></div>
               <span className="text-gray-600">Desk</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-green-600 rounded-full"></div>
               <span className="text-gray-600">Chair/Seat</span>
             </div>
             <div className="flex items-center gap-2">
