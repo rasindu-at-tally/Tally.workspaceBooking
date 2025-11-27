@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { LogOut, Calendar, LayoutDashboard, Users, FileText, Settings, PenTool, Video, DoorOpen, Sparkles, ChevronRight } from 'lucide-react';
+import { LogOut, Calendar, LayoutDashboard, Users, FileText, Settings, PenTool, Video, DoorOpen, Sparkles, ChevronRight, MapPin } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -138,6 +138,19 @@ export function Layout({ children }: LayoutProps) {
                   <div className="truncate text-xs text-cyan-200/70">{user?.email}</div>
                 </div>
               </div>
+              {/* User Location Badge */}
+              {user?.location && (
+                <div className="mt-3 flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2">
+                  <MapPin className="h-3.5 w-3.5 text-cyan-300" />
+                  <span className="text-xs font-medium text-cyan-100">{user.location}</span>
+                </div>
+              )}
+              {!user?.location && isAdmin && (
+                <div className="mt-3 flex items-center gap-2 rounded-lg bg-emerald-500/20 px-3 py-2">
+                  <MapPin className="h-3.5 w-3.5 text-emerald-300" />
+                  <span className="text-xs font-medium text-emerald-100">All Locations</span>
+                </div>
+              )}
             </div>
             
             {/* Logout Button */}

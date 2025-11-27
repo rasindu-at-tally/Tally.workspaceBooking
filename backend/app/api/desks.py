@@ -20,7 +20,13 @@ def get_desks(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Get all desks with optional filters"""
+    """Get all desks with optional filters. 
+    Non-admin users can only see desks in their assigned location."""
+    # If user is not admin, restrict to their assigned location
+    if current_user.role.value != 'admin' and current_user.location:
+        # Override location filter to user's assigned location
+        location = current_user.location
+    
     desks = DeskService.get_all_desks(db, location=location, is_active=is_active)
     return [DeskResponse.model_validate(desk) for desk in desks]
 
@@ -30,7 +36,11 @@ def get_locations(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Get all unique locations"""
+    """Get all unique locations. 
+    Non-admin users only see their assigned location."""
+    # If user is not admin and has an assigned location, only return their location
+    if current_user.role.value != 'admin' and current_user.location:
+        return [current_user.location]
     return DeskService.get_locations(db)
 
 

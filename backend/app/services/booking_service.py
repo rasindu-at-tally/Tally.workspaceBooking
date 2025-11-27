@@ -22,6 +22,7 @@ class BookingError:
     BOOKING_NOT_FOUND = "BOOKING_NOT_FOUND"
     INSUFFICIENT_PERMISSIONS = "INSUFFICIENT_PERMISSIONS"
     PAST_DATE_BOOKING = "PAST_DATE_BOOKING"
+    LOCATION_NOT_ALLOWED = "LOCATION_NOT_ALLOWED"
 
 
 class BookingService:
@@ -57,6 +58,14 @@ class BookingService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=BookingError.DESK_INACTIVE,
             )
+        
+        # Check if user is allowed to book at this location (non-admins only)
+        if user.role != UserRole.ADMIN and user.location:
+            if desk.location != user.location:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f"You can only book desks in your assigned location: {user.location}",
+                )
         
         # Check if user already has an active booking on this date
         existing_user_booking = db.query(Booking).filter(

@@ -27,13 +27,14 @@ def seed_database():
         
         print("Starting database seed...")
         
-        # Create admin users
+        # Create admin users (admins have no location restriction - can book anywhere)
         admin1 = User(
             id=uuid.uuid4(),
             email="admin1@office.com",
             full_name="Admin One",
             hashed_password=get_password_hash("admin123"),
             role=UserRole.ADMIN,
+            location=None,  # Admins can access all locations
         )
         admin2 = User(
             id=uuid.uuid4(),
@@ -41,15 +42,17 @@ def seed_database():
             full_name="Admin Two",
             hashed_password=get_password_hash("admin123"),
             role=UserRole.ADMIN,
+            location=None,  # Admins can access all locations
         )
         
-        # Create regular users
+        # Create regular users with assigned locations
         user1 = User(
             id=uuid.uuid4(),
             email="user1@office.com",
             full_name="User One",
             hashed_password=get_password_hash("user123"),
             role=UserRole.USER,
+            location="Melbourne",  # Can only book Melbourne desks
         )
         user2 = User(
             id=uuid.uuid4(),
@@ -57,6 +60,7 @@ def seed_database():
             full_name="User Two",
             hashed_password=get_password_hash("user123"),
             role=UserRole.USER,
+            location="Brisbane",  # Can only book Brisbane desks
         )
         user3 = User(
             id=uuid.uuid4(),
@@ -64,12 +68,21 @@ def seed_database():
             full_name="User Three",
             hashed_password=get_password_hash("user123"),
             role=UserRole.USER,
+            location="Auckland",  # Can only book Auckland desks
+        )
+        user4 = User(
+            id=uuid.uuid4(),
+            email="user4@office.com",
+            full_name="User Four",
+            hashed_password=get_password_hash("user123"),
+            role=UserRole.USER,
+            location="Hyderabad",  # Can only book Hyderabad desks
         )
         
-        db.add_all([admin1, admin2, user1, user2, user3])
+        db.add_all([admin1, admin2, user1, user2, user3, user4])
         db.flush()
         
-        print("✓ Created 2 admin users and 3 regular users")
+        print("✓ Created 2 admin users and 4 regular users with location assignments")
         
         # Create desks for four locations
         # Location 1: Melbourne Office
@@ -80,7 +93,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"MEL-TL-{i+1}",
-                location="Melbourne Office",
+                location="Melbourne",
                 position_x=1,
                 position_y=i,
                 desk_type="6-seater",
@@ -94,7 +107,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"MEL-CL-{i+1}",
-                location="Melbourne Office",
+                location="Melbourne",
                 position_x=2,
                 position_y=i,
                 desk_type="4-seater",
@@ -108,7 +121,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"MEL-CR-{i+1}",
-                location="Melbourne Office",
+                location="Melbourne",
                 position_x=3,
                 position_y=i,
                 desk_type="4-seater",
@@ -122,7 +135,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"MEL-TR-{i+1}",
-                location="Melbourne Office",
+                location="Melbourne",
                 position_x=4,
                 position_y=i,
                 desk_type="6-seater",
@@ -138,7 +151,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"BRI-TL-{i+1}",
-                location="Brisbane Office",
+                location="Brisbane",
                 position_x=1,
                 position_y=i,
                 desk_type="6-seater",
@@ -151,7 +164,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"BRI-CL-{i+1}",
-                location="Brisbane Office",
+                location="Brisbane",
                 position_x=2,
                 position_y=i,
                 desk_type="4-seater",
@@ -164,7 +177,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"BRI-CR-{i+1}",
-                location="Brisbane Office",
+                location="Brisbane",
                 position_x=3,
                 position_y=i,
                 desk_type="4-seater",
@@ -177,7 +190,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"BRI-TR-{i+1}",
-                location="Brisbane Office",
+                location="Brisbane",
                 position_x=4,
                 position_y=i,
                 desk_type="6-seater",
@@ -193,7 +206,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"AKL-TL-{i+1}",
-                location="Auckland Office",
+                location="Auckland",
                 position_x=1,
                 position_y=i,
                 desk_type="6-seater",
@@ -206,7 +219,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"AKL-CL-{i+1}",
-                location="Auckland Office",
+                location="Auckland",
                 position_x=2,
                 position_y=i,
                 desk_type="4-seater",
@@ -219,7 +232,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"AKL-CR-{i+1}",
-                location="Auckland Office",
+                location="Auckland",
                 position_x=3,
                 position_y=i,
                 desk_type="4-seater",
@@ -232,7 +245,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"AKL-TR-{i+1}",
-                location="Auckland Office",
+                location="Auckland",
                 position_x=4,
                 position_y=i,
                 desk_type="6-seater",
@@ -248,7 +261,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"HYD-TL-{i+1}",
-                location="Hyderabad Office",
+                location="Hyderabad",
                 position_x=1,
                 position_y=i,
                 desk_type="6-seater",
@@ -261,7 +274,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"HYD-CL-{i+1}",
-                location="Hyderabad Office",
+                location="Hyderabad",
                 position_x=2,
                 position_y=i,
                 desk_type="4-seater",
@@ -274,7 +287,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"HYD-CR-{i+1}",
-                location="Hyderabad Office",
+                location="Hyderabad",
                 position_x=3,
                 position_y=i,
                 desk_type="4-seater",
@@ -287,7 +300,7 @@ def seed_database():
             desk = Desk(
                 id=uuid.uuid4(),
                 name=f"HYD-TR-{i+1}",
-                location="Hyderabad Office",
+                location="Hyderabad",
                 position_x=4,
                 position_y=i,
                 desk_type="6-seater",

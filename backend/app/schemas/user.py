@@ -17,6 +17,14 @@ class UserCreate(UserBase):
     """Schema for creating a user"""
     password: str
     role: Optional[UserRole] = UserRole.USER
+    location: Optional[str] = None
+
+
+class UserUpdate(BaseModel):
+    """Schema for updating a user"""
+    full_name: Optional[str] = None
+    role: Optional[UserRole] = None
+    location: Optional[str] = None
 
 
 class UserLogin(BaseModel):
@@ -29,6 +37,7 @@ class UserResponse(UserBase):
     """Schema for user response"""
     id: UUID
     role: UserRole
+    location: Optional[str] = None
     avatar_url: Optional[str] = None
     created_at: datetime
     

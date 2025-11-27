@@ -23,6 +23,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=True)  # Nullable for OAuth users
     full_name = Column(String(255), nullable=False)
     role = Column(Enum(UserRole), default=UserRole.USER, nullable=False)
+    location = Column(String(255), nullable=True, index=True)  # User's assigned office location
     
     # OAuth fields
     google_id = Column(String(255), unique=True, nullable=True, index=True)
