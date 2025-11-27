@@ -43,8 +43,8 @@ def create_room_booking(
             user_id=current_user.id,
             action="CREATE_ROOM_BOOKING",
             entity_type="room_booking",
-            entity_id=str(booking.id),
-            details=f"Booked room {booking.room_id} from {booking.start_time} to {booking.end_time}"
+            entity_id=booking.id,
+            metadata={"room_id": str(booking.room_id), "start_time": str(booking.start_time), "end_time": str(booking.end_time)}
         )
         
         return booking
@@ -196,8 +196,8 @@ def update_room_booking(
             user_id=current_user.id,
             action="UPDATE_ROOM_BOOKING",
             entity_type="room_booking",
-            entity_id=str(booking_id),
-            details=f"Updated room booking"
+            entity_id=booking_id,
+            metadata={"action": "updated"}
         )
         
         return updated_booking
@@ -244,8 +244,8 @@ def cancel_room_booking(
         user_id=current_user.id,
         action="CANCEL_ROOM_BOOKING",
         entity_type="room_booking",
-        entity_id=str(booking_id),
-        details=f"Cancelled room booking"
+        entity_id=booking_id,
+        metadata={"action": "cancelled"}
     )
     
     return cancelled_booking

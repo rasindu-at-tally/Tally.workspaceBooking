@@ -9,7 +9,7 @@ class MeetingRoomBase(BaseModel):
     """Base meeting room schema"""
     room_name: str = Field(..., min_length=1, max_length=100)
     room_number: str = Field(..., min_length=1, max_length=50)
-    floor: str = Field(..., min_length=1, max_length=50)
+    location: str = Field(..., min_length=1, max_length=50)
     capacity: int = Field(..., gt=0, le=100)
     has_projector: bool = False
     has_video_conf: bool = False
@@ -27,7 +27,7 @@ class MeetingRoomUpdate(BaseModel):
     """Schema for updating a meeting room"""
     room_name: Optional[str] = Field(None, min_length=1, max_length=100)
     room_number: Optional[str] = Field(None, min_length=1, max_length=50)
-    floor: Optional[str] = Field(None, min_length=1, max_length=50)
+    location: Optional[str] = Field(None, min_length=1, max_length=50)
     capacity: Optional[int] = Field(None, gt=0, le=100)
     has_projector: Optional[bool] = None
     has_video_conf: Optional[bool] = None
@@ -49,7 +49,7 @@ class MeetingRoomResponse(MeetingRoomBase):
 
 class MeetingRoomFilter(BaseModel):
     """Schema for filtering meeting rooms"""
-    floor: Optional[str] = None
+    location: Optional[str] = None
     min_capacity: Optional[int] = Field(None, ge=1)
     has_projector: Optional[bool] = None
     has_video_conf: Optional[bool] = None

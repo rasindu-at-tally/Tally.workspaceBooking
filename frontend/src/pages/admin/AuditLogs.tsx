@@ -12,7 +12,7 @@ export function AuditLogs() {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Audit Logs</h1>
+          <h1 className="text-3xl font-bold text-cyan-600">Audit Logs</h1>
           <p className="mt-2 text-gray-600">Track all system actions and changes</p>
         </div>
 

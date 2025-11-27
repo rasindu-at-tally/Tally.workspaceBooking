@@ -43,8 +43,8 @@ class MeetingRoomService:
         query = db.query(MeetingRoom)
         
         if filters:
-            if filters.floor is not None:
-                query = query.filter(MeetingRoom.floor == filters.floor)
+            if filters.location is not None:
+                query = query.filter(MeetingRoom.location == filters.location)
             
             if filters.min_capacity is not None:
                 query = query.filter(MeetingRoom.capacity >= filters.min_capacity)
@@ -64,7 +64,7 @@ class MeetingRoomService:
             if filters.is_active is not None:
                 query = query.filter(MeetingRoom.is_active == filters.is_active)
         
-        return query.order_by(MeetingRoom.floor, MeetingRoom.room_name).offset(skip).limit(limit).all()
+        return query.order_by(MeetingRoom.location, MeetingRoom.room_name).offset(skip).limit(limit).all()
     
     @staticmethod
     def update_meeting_room(
@@ -121,10 +121,10 @@ class MeetingRoomService:
         return room
     
     @staticmethod
-    def get_floors(db: Session) -> List[str]:
-        """Get list of unique floors"""
-        floors = db.query(MeetingRoom.floor).distinct().order_by(MeetingRoom.floor).all()
-        return [floor[0] for floor in floors]
+    def get_locations(db: Session) -> List[str]:
+        """Get list of unique locations"""
+        locations = db.query(MeetingRoom.location).distinct().order_by(MeetingRoom.location).all()
+        return [location[0] for location in locations]
     
     @staticmethod
     def get_room_count(db: Session, is_active: Optional[bool] = None) -> int:

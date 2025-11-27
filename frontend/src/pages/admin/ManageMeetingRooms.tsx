@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { MeetingRoom, CreateMeetingRoomRequest, UpdateMeetingRoomRequest } from '../../types';
+import { Layout } from '@/components/Layout';
 
 const API_URL =
   (import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ||
@@ -70,7 +71,7 @@ export default function ManageMeetingRooms() {
     const data = {
       room_name: formData.get('room_name') as string,
       room_number: formData.get('room_number') as string,
-      floor: formData.get('floor') as string,
+      location: formData.get('location') as string,
       capacity: parseInt(formData.get('capacity') as string),
       has_projector: formData.get('has_projector') === 'on',
       has_video_conf: formData.get('has_video_conf') === 'on',
@@ -87,19 +88,20 @@ export default function ManageMeetingRooms() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manage Meeting Rooms</h1>
-          <p className="mt-2 text-gray-600">Add, edit, or remove meeting rooms</p>
+    <Layout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-cyan-600">Manage Meeting Rooms</h1>
+            <p className="mt-2 text-gray-600">Add, edit, or remove meeting rooms</p>
+          </div>
+          <button
+            onClick={() => setIsCreating(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Add Meeting Room
+          </button>
         </div>
-        <button
-          onClick={() => setIsCreating(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Add Meeting Room
-        </button>
-      </div>
 
       {/* Create/Edit Form */}
       {(isCreating || editingRoom) && (
@@ -135,14 +137,14 @@ export default function ManageMeetingRooms() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Floor *
+                  Location *
                 </label>
                 <input
                   type="text"
-                  name="floor"
-                  defaultValue={editingRoom?.floor}
+                  name="location"
+                  defaultValue={editingRoom?.location}
                   required
-                  placeholder="e.g., Floor 1"
+                  placeholder="e.g., Melbourne, Sydney"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -258,7 +260,7 @@ export default function ManageMeetingRooms() {
                   Room Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Floor
+                  Location
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Capacity
@@ -279,7 +281,7 @@ export default function ManageMeetingRooms() {
                     <div className="text-sm text-gray-500">{room.room_number}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {room.floor}
+                    {room.location}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {room.capacity} people
@@ -316,7 +318,8 @@ export default function ManageMeetingRooms() {
           </table>
         </div>
       )}
-    </div>
+      </div>
+    </Layout>
   );
 }
 

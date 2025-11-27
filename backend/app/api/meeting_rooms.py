@@ -40,8 +40,8 @@ def create_meeting_room(
             user_id=current_user.id,
             action="CREATE_MEETING_ROOM",
             entity_type="meeting_room",
-            entity_id=str(room.id),
-            details=f"Created meeting room: {room.room_name}"
+            entity_id=room.id,
+            metadata={"room_name": room.room_name}
         )
         
         return room
@@ -54,7 +54,7 @@ def create_meeting_room(
 
 @router.get("", response_model=List[MeetingRoomResponse])
 def get_meeting_rooms(
-    floor: Optional[str] = Query(None),
+    location: Optional[str] = Query(None),
     min_capacity: Optional[int] = Query(None, ge=1),
     has_projector: Optional[bool] = Query(None),
     has_video_conf: Optional[bool] = Query(None),
@@ -68,7 +68,7 @@ def get_meeting_rooms(
 ):
     """Get all meeting rooms with optional filters"""
     filters = MeetingRoomFilter(
-        floor=floor,
+        location=location,
         min_capacity=min_capacity,
         has_projector=has_projector,
         has_video_conf=has_video_conf,
@@ -81,14 +81,14 @@ def get_meeting_rooms(
     return rooms
 
 
-@router.get("/floors", response_model=List[str])
-def get_floors(
+@router.get("/locations", response_model=List[str])
+def get_locations(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get list of unique floors"""
-    floors = MeetingRoomService.get_floors(db)
-    return floors
+    """Get list of unique locations"""
+    locations = MeetingRoomService.get_locations(db)
+    return locations
 
 
 @router.get("/{room_id}", response_model=MeetingRoomResponse)
@@ -135,8 +135,8 @@ def update_meeting_room(
         user_id=current_user.id,
         action="UPDATE_MEETING_ROOM",
         entity_type="meeting_room",
-        entity_id=str(room.id),
-        details=f"Updated meeting room: {room.room_name}"
+        entity_id=room.id,
+        metadata={"room_name": room.room_name}
     )
     
     return room
@@ -169,8 +169,8 @@ def delete_meeting_room(
         user_id=current_user.id,
         action=action,
         entity_type="meeting_room",
-        entity_id=str(room_id),
-        details=f"{'Deactivated' if soft_delete else 'Deleted'} meeting room"
+        entity_id=room_id,
+        metadata={"soft_delete": soft_delete}
     )
 
 
@@ -199,8 +199,8 @@ def activate_meeting_room(
         user_id=current_user.id,
         action="ACTIVATE_MEETING_ROOM",
         entity_type="meeting_room",
-        entity_id=str(room.id),
-        details=f"Activated meeting room: {room.room_name}"
+        entity_id=room.id,
+        metadata={"room_name": room.room_name}
     )
     
     return room

@@ -191,18 +191,18 @@ class RoomRecommendationService:
             return 0.5
         
         desk_location = desk.location
-        room_floor = room.floor
+        room_location = room.location
         
         # If desk location contains floor information, extract it
         # Otherwise, compare directly
-        if desk_location == room_floor:
+        if desk_location == room_location:
             return 1.0
         
         # Try to extract floor numbers for comparison
         try:
             # Extract floor numbers (e.g., "1st Floor" -> 1, "Floor 2" -> 2)
             desk_floor_num = self._extract_floor_number(desk_location)
-            room_floor_num = self._extract_floor_number(room_floor)
+            room_floor_num = self._extract_floor_number(room_location)
             
             if desk_floor_num and room_floor_num:
                 floor_diff = abs(desk_floor_num - room_floor_num)

@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
-import { Stage, Layer, Rect, Text, Group } from 'react-konva';
+import { Stage, Layer, Rect, Text, Group, Circle } from 'react-konva';
 import type { Desk, BookingDetail } from '@/types';
 import { floorPlansApi, FloorPlanItem } from '@/lib/api/floorPlans';
 import { useToast } from '@/components/Toast';
@@ -11,15 +11,19 @@ interface SeatingPlanProps {
   selectedLocation?: string;
 }
 
-// Desk Component for Floor Plan
-function DeskKonva({ 
+type FloorItemWithSeats = FloorPlanItem & {
+  seats?: number;
+};
+
+// Single Seat Desk Component
+function SingleSeatDeskKonva({ 
   item,
   desk,
   isBooked,
   bookedBy,
   onClick
 }: { 
-  item: FloorPlanItem;
+  item: FloorItemWithSeats;
   desk?: Desk;
   isBooked: boolean;
   bookedBy?: string;
@@ -27,100 +31,15 @@ function DeskKonva({
 }) {
   const isActive = desk?.is_active ?? true;
   const isClickable = isActive && !isBooked;
-  const isSelected = false; // Can add selection state later
-
-  return (
-    <Group
-      x={item.x}
-      y={item.y}
-      rotation={item.rotation}
-      onClick={isClickable ? onClick : undefined}
-      onTap={isClickable ? onClick : undefined}
-    >
-      {/* Desk surface */}
-      <Rect
-        width={120}
-        height={80}
-        fill={!isActive ? '#fca5a5' : isBooked ? '#d1d5db' : '#8B7355'}
-        stroke={isSelected ? '#3b82f6' : '#654321'}
-        strokeWidth={2}
-        shadowColor="black"
-        shadowBlur={6}
-        shadowOpacity={0.3}
-        shadowOffset={{ x: 2, y: 2 }}
-        cornerRadius={8}
-        opacity={isClickable ? 1 : 0.6}
-      />
-      <Rect
-        x={4}
-        y={4}
-        width={112}
-        height={72}
-        fill={!isActive ? '#fecaca' : isBooked ? '#e5e7eb' : '#A0826D'}
-        cornerRadius={6}
-      />
-      {/* Drawers */}
-      <Rect
-        x={20}
-        y={50}
-        width={35}
-        height={12}
-        fill="#654321"
-        cornerRadius={3}
-      />
-      <Rect
-        x={65}
-        y={50}
-        width={35}
-        height={12}
-        fill="#654321"
-        cornerRadius={3}
-      />
-      {/* Label */}
-      <Text
-        x={10}
-        y={12}
-        text={desk?.name || item.deskName || 'Desk'}
-        fontSize={14}
-        fontStyle="bold"
-        fill="#fff"
-      />
-      {/* Booked by info */}
-      {isBooked && bookedBy && (
-        <Text
-          x={10}
-          y={32}
-          text={`Booked by ${bookedBy}`}
-          fontSize={11}
-          fontStyle="normal"
-          fill="#e5e7eb"
-        />
-      )}
-    </Group>
-  );
-}
-
-// Chair Component for Floor Plan
-function ChairKonva({ 
-  item,
-  desk,
-  isBooked,
-  bookedBy,
-  onClick
-}: { 
-  item: FloorPlanItem;
-  desk?: Desk;
-  isBooked: boolean;
-  bookedBy?: string;
-  onClick: () => void;
-}) {
-  const isActive = desk?.is_active ?? true;
-  const isClickable = isActive && !isBooked;
+  const width = 60;
+  const height = 50;
 
   const colors = {
-    main: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#2563eb',
-    light: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#60a5fa',
-    stroke: !isActive ? '#dc2626' : isBooked ? '#4b5563' : '#1e40af'
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    badge: '#06b6d4',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
   };
 
   return (
@@ -130,80 +49,287 @@ function ChairKonva({
       rotation={item.rotation}
       onClick={isClickable ? onClick : undefined}
       onTap={isClickable ? onClick : undefined}
+      opacity={isClickable ? 1 : 0.7}
+    >
+      {/* Desk surface */}
+      <Rect
+        width={width}
+        height={height}
+        fill={colors.desk}
+        stroke={isClickable ? '#06b6d4' : '#57534e'}
+        strokeWidth={isClickable ? 2 : 1}
+        cornerRadius={4}
+        shadowColor="black"
+        shadowBlur={4}
+        shadowOpacity={0.2}
+        shadowOffset={{ x: 2, y: 2 }}
+      />
+      <Rect x={2} y={2} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
+      
+      {/* Chair indicator */}
+      <Circle x={width / 2} y={height + 12} radius={8} fill={colors.chair} />
+      
+      {/* Seat count badge */}
+      <Circle x={width - 5} y={5} radius={8} fill={colors.badge} />
+      <Text x={width - 9} y={1} text="1" fontSize={10} fontStyle="bold" fill="#fff" />
+      
+      {/* Label */}
+      <Text
+        x={3}
+        y={height / 2 - 12}
+        text={desk?.name?.substring(0, 6) || item.deskName?.substring(0, 6) || 'Desk'}
+        fontSize={8}
+        fontStyle="bold"
+        fill={colors.text}
+      />
+      
+      {/* Booked by */}
+      {isBooked && bookedBy && (
+        <Text x={3} y={height / 2} text={bookedBy.substring(0, 8)} fontSize={7} fill="#6b7280" />
+      )}
+    </Group>
+  );
+}
+
+// Two Seat Desk Component
+function TwoSeatDeskKonva({ 
+  item, desk, isBooked, bookedBy, onClick
+}: { 
+  item: FloorItemWithSeats; desk?: Desk; isBooked: boolean; bookedBy?: string; onClick: () => void;
+}) {
+  const isActive = desk?.is_active ?? true;
+  const isClickable = isActive && !isBooked;
+  const width = 100;
+  const height = 50;
+
+  const colors = {
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    badge: '#06b6d4',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+  };
+
+  return (
+    <Group
+      x={item.x} y={item.y} rotation={item.rotation}
+      onClick={isClickable ? onClick : undefined}
+      onTap={isClickable ? onClick : undefined}
+      opacity={isClickable ? 1 : 0.7}
+    >
+      <Rect width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
+      <Rect x={2} y={2} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
+      <Rect x={width / 2 - 0.5} y={5} width={1} height={height - 10} fill={colors.desk} />
+      
+      {/* Chairs */}
+      <Circle x={width / 4} y={height + 12} radius={8} fill={colors.chair} />
+      <Circle x={(width / 4) * 3} y={height + 12} radius={8} fill={colors.chair} />
+      
+      {/* Badge */}
+      <Circle x={width - 5} y={5} radius={8} fill={colors.badge} />
+      <Text x={width - 9} y={1} text="2" fontSize={10} fontStyle="bold" fill="#fff" />
+      
+      <Text x={3} y={height / 2 - 12} text={desk?.name?.substring(0, 10) || item.deskName?.substring(0, 10) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={3} y={height / 2} text={bookedBy.substring(0, 12)} fontSize={7} fill="#6b7280" />}
+    </Group>
+  );
+}
+
+// Three Seat Desk Component
+function ThreeSeatDeskKonva({ 
+  item, desk, isBooked, bookedBy, onClick
+}: { 
+  item: FloorItemWithSeats; desk?: Desk; isBooked: boolean; bookedBy?: string; onClick: () => void;
+}) {
+  const isActive = desk?.is_active ?? true;
+  const isClickable = isActive && !isBooked;
+  const width = 140;
+  const height = 50;
+
+  const colors = {
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    badge: '#06b6d4',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+  };
+
+  return (
+    <Group
+      x={item.x} y={item.y} rotation={item.rotation}
+      onClick={isClickable ? onClick : undefined}
+      onTap={isClickable ? onClick : undefined}
+      opacity={isClickable ? 1 : 0.7}
+    >
+      <Rect width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
+      <Rect x={2} y={2} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
+      <Rect x={width / 3 - 0.5} y={5} width={1} height={height - 10} fill={colors.desk} />
+      <Rect x={(width / 3) * 2 - 0.5} y={5} width={1} height={height - 10} fill={colors.desk} />
+      
+      {/* Chairs */}
+      <Circle x={width / 6} y={height + 12} radius={8} fill={colors.chair} />
+      <Circle x={width / 2} y={height + 12} radius={8} fill={colors.chair} />
+      <Circle x={(width / 6) * 5} y={height + 12} radius={8} fill={colors.chair} />
+      
+      {/* Badge */}
+      <Circle x={width - 5} y={5} radius={8} fill={colors.badge} />
+      <Text x={width - 9} y={1} text="3" fontSize={10} fontStyle="bold" fill="#fff" />
+      
+      <Text x={3} y={height / 2 - 12} text={desk?.name?.substring(0, 14) || item.deskName?.substring(0, 14) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={3} y={height / 2} text={bookedBy.substring(0, 16)} fontSize={7} fill="#6b7280" />}
+    </Group>
+  );
+}
+
+// Four Seat Desk Component
+function FourSeatDeskKonva({ 
+  item, desk, isBooked, bookedBy, onClick
+}: { 
+  item: FloorItemWithSeats; desk?: Desk; isBooked: boolean; bookedBy?: string; onClick: () => void;
+}) {
+  const isActive = desk?.is_active ?? true;
+  const isClickable = isActive && !isBooked;
+  const width = 100;
+  const height = 70;
+
+  const colors = {
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    badge: '#06b6d4',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+  };
+
+  return (
+    <Group
+      x={item.x} y={item.y} rotation={item.rotation}
+      onClick={isClickable ? onClick : undefined}
+      onTap={isClickable ? onClick : undefined}
+      opacity={isClickable ? 1 : 0.7}
+    >
+      <Rect y={15} width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
+      <Rect x={2} y={17} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
+      <Rect x={width / 2 - 0.5} y={20} width={1} height={height - 10} fill={colors.desk} />
+      <Rect x={5} y={15 + height / 2 - 0.5} width={width - 10} height={1} fill={colors.desk} />
+      
+      {/* Top chairs */}
+      <Circle x={width / 4} y={5} radius={8} fill={colors.chair} />
+      <Circle x={(width / 4) * 3} y={5} radius={8} fill={colors.chair} />
+      {/* Bottom chairs */}
+      <Circle x={width / 4} y={height + 25} radius={8} fill={colors.chair} />
+      <Circle x={(width / 4) * 3} y={height + 25} radius={8} fill={colors.chair} />
+      
+      {/* Badge */}
+      <Circle x={width - 5} y={20} radius={8} fill={colors.badge} />
+      <Text x={width - 9} y={16} text="4" fontSize={10} fontStyle="bold" fill="#fff" />
+      
+      <Text x={3} y={15 + height / 2 - 12} text={desk?.name?.substring(0, 10) || item.deskName?.substring(0, 10) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={3} y={15 + height / 2} text={bookedBy.substring(0, 12)} fontSize={7} fill="#6b7280" />}
+    </Group>
+  );
+}
+
+// Six Seat Desk Component
+function SixSeatDeskKonva({ 
+  item, desk, isBooked, bookedBy, onClick
+}: { 
+  item: FloorItemWithSeats; desk?: Desk; isBooked: boolean; bookedBy?: string; onClick: () => void;
+}) {
+  const isActive = desk?.is_active ?? true;
+  const isClickable = isActive && !isBooked;
+  const width = 150;
+  const height = 60;
+
+  const colors = {
+    desk: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#78716c',
+    deskTop: !isActive ? '#fecaca' : isBooked ? '#d1d5db' : '#a8a29e',
+    chair: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    badge: '#06b6d4',
+    text: !isActive ? '#991b1b' : isBooked ? '#374151' : '#374151',
+  };
+
+  return (
+    <Group
+      x={item.x} y={item.y} rotation={item.rotation}
+      onClick={isClickable ? onClick : undefined}
+      onTap={isClickable ? onClick : undefined}
+      opacity={isClickable ? 1 : 0.7}
+    >
+      <Rect y={15} width={width} height={height} fill={colors.desk} stroke={isClickable ? '#06b6d4' : '#57534e'} strokeWidth={isClickable ? 2 : 1} cornerRadius={4} shadowColor="black" shadowBlur={4} shadowOpacity={0.2} shadowOffset={{ x: 2, y: 2 }} />
+      <Rect x={2} y={17} width={width - 4} height={height - 4} fill={colors.deskTop} cornerRadius={3} />
+      
+      {/* Top chairs */}
+      <Circle x={width / 6} y={5} radius={8} fill={colors.chair} />
+      <Circle x={width / 2} y={5} radius={8} fill={colors.chair} />
+      <Circle x={(width / 6) * 5} y={5} radius={8} fill={colors.chair} />
+      {/* Bottom chairs */}
+      <Circle x={width / 6} y={height + 25} radius={8} fill={colors.chair} />
+      <Circle x={width / 2} y={height + 25} radius={8} fill={colors.chair} />
+      <Circle x={(width / 6) * 5} y={height + 25} radius={8} fill={colors.chair} />
+      
+      {/* Badge */}
+      <Circle x={width - 5} y={20} radius={8} fill={colors.badge} />
+      <Text x={width - 9} y={16} text="6" fontSize={10} fontStyle="bold" fill="#fff" />
+      
+      <Text x={3} y={15 + height / 2 - 12} text={desk?.name?.substring(0, 16) || item.deskName?.substring(0, 16) || 'Desk'} fontSize={8} fontStyle="bold" fill={colors.text} />
+      {isBooked && bookedBy && <Text x={3} y={15 + height / 2} text={bookedBy.substring(0, 18)} fontSize={7} fill="#6b7280" />}
+    </Group>
+  );
+}
+
+// Legacy Desk Component (for old floor plans without seats property)
+function LegacyDeskKonva({ 
+  item, desk, isBooked, bookedBy, onClick
+}: { 
+  item: FloorItemWithSeats; desk?: Desk; isBooked: boolean; bookedBy?: string; onClick: () => void;
+}) {
+  // Fallback to SingleSeatDesk for legacy items
+  return <SingleSeatDeskKonva item={item} desk={desk} isBooked={isBooked} bookedBy={bookedBy} onClick={onClick} />;
+}
+
+// Legacy Chair Component (for old floor plans)
+function LegacyChairKonva({ 
+  item, desk, isBooked, bookedBy, onClick
+}: { 
+  item: FloorItemWithSeats; desk?: Desk; isBooked: boolean; bookedBy?: string; onClick: () => void;
+}) {
+  const isActive = desk?.is_active ?? true;
+  const isClickable = isActive && !isBooked;
+
+  const colors = {
+    main: !isActive ? '#ef4444' : isBooked ? '#6b7280' : '#3b82f6',
+    light: !isActive ? '#fca5a5' : isBooked ? '#9ca3af' : '#60a5fa',
+    stroke: !isActive ? '#dc2626' : isBooked ? '#4b5563' : '#1e40af'
+  };
+
+  return (
+    <Group
+      x={item.x} y={item.y} rotation={item.rotation}
+      onClick={isClickable ? onClick : undefined}
+      onTap={isClickable ? onClick : undefined}
+      opacity={isClickable ? 1 : 0.7}
     >
       {/* Chair backrest */}
-      <Rect
-        x={0}
-        y={0}
-        width={45}
-        height={12}
-        fill={colors.main}
-        stroke={colors.stroke}
-        strokeWidth={2}
-        cornerRadius={6}
-        shadowColor="black"
-        shadowBlur={3}
-        shadowOpacity={0.3}
-        opacity={isClickable ? 1 : 0.6}
-      />
-      <Rect
-        x={3}
-        y={2}
-        width={39}
-        height={8}
-        fill={colors.light}
-        cornerRadius={4}
-      />
+      <Rect x={0} y={0} width={40} height={10} fill={colors.main} stroke={colors.stroke} strokeWidth={1} cornerRadius={5} />
+      <Rect x={2} y={2} width={36} height={6} fill={colors.light} cornerRadius={3} />
+      
       {/* Chair seat */}
-      <Rect
-        x={0}
-        y={14}
-        width={45}
-        height={32}
-        fill={colors.main}
-        stroke={colors.stroke}
-        strokeWidth={2}
-        cornerRadius={6}
-        shadowColor="black"
-        shadowBlur={3}
-        shadowOpacity={0.3}
-      />
-      <Rect
-        x={3}
-        y={17}
-        width={39}
-        height={26}
-        fill={colors.light}
-        cornerRadius={4}
-      />
+      <Rect x={0} y={12} width={40} height={28} fill={colors.main} stroke={colors.stroke} strokeWidth={1} cornerRadius={5} />
+      <Rect x={2} y={14} width={36} height={24} fill={colors.light} cornerRadius={3} />
+      
       {/* Label */}
       {desk && (
-        <Text
-          x={5}
-          y={18}
-          text={desk.name}
-          fontSize={8}
-          fontStyle="bold"
-          fill="#fff"
-        />
+        <Text x={4} y={16} text={desk.name.substring(0, 5)} fontSize={7} fontStyle="bold" fill="#fff" />
       )}
-      {/* Booked by info (small, below the chair) */}
       {isBooked && bookedBy && (
-        <Text
-          x={0}
-          y={32}
-          text={bookedBy}
-          fontSize={7}
-          fontStyle="normal"
-          fill="#e5e7eb"
-        />
+        <Text x={4} y={26} text={bookedBy.substring(0, 5)} fontSize={6} fill="#e5e7eb" />
       )}
     </Group>
   );
 }
 
 export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: SeatingPlanProps) {
-  const [floorPlanItems, setFloorPlanItems] = useState<FloorPlanItem[]>([]);
+  const [floorPlanItems, setFloorPlanItems] = useState<FloorItemWithSeats[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasFloorPlan, setHasFloorPlan] = useState(false);
   const [stageScale, setStageScale] = useState(1);
@@ -214,34 +340,25 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
     return new Set(bookings.map((b) => b.desk_id));
   }, [bookings]);
 
-  // Map of desk_id -> booking detail for showing who booked the desk
   const bookingByDeskId = useMemo(() => {
     const map = new Map<string, BookingDetail>();
-    bookings.forEach((b) => {
-      // Prefer the latest booking for a desk if multiple exist
-      map.set(b.desk_id, b);
-    });
+    bookings.forEach((b) => map.set(b.desk_id, b));
     return map;
   }, [bookings]);
 
-  // Create a map of desk names to desk objects
   const deskMap = useMemo(() => {
     const map = new Map<string, Desk>();
     desks.forEach(desk => map.set(desk.name, desk));
     return map;
   }, [desks]);
 
-  // Make the seating canvas responsive by scaling to the container width
   useEffect(() => {
     const updateScale = () => {
       const container = canvasContainerRef.current;
       if (!container) return;
-
       const containerWidth = container.offsetWidth;
-      const targetWidth = 1800; // logical canvas width
-
+      const targetWidth = 1800;
       if (!containerWidth) return;
-
       const scale = Math.min(containerWidth / targetWidth, 1);
       setStageScale(scale);
     };
@@ -251,7 +368,6 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
     return () => window.removeEventListener('resize', updateScale);
   }, []);
 
-  // Load floor plan for the selected location
   useEffect(() => {
     const loadFloorPlan = async () => {
       if (!selectedLocation) {
@@ -262,12 +378,11 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
       setIsLoading(true);
       try {
         const floorPlan = await floorPlansApi.getByLocation(selectedLocation);
-        const items: FloorPlanItem[] = JSON.parse(floorPlan.layout_data);
+        const items: FloorItemWithSeats[] = JSON.parse(floorPlan.layout_data);
         setFloorPlanItems(items);
         setHasFloorPlan(true);
       } catch (error: any) {
         if (error.response?.status === 404) {
-          // No floor plan for this location
           setHasFloorPlan(false);
           setFloorPlanItems([]);
         } else {
@@ -284,40 +399,95 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
     };
 
     loadFloorPlan();
-  }, [selectedLocation]);
+  }, [selectedLocation, showToast]);
 
-  // Render the floor plan if available
+  const totalSeats = floorPlanItems.reduce((sum, item) => sum + (item.seats || 1), 0);
+  const availableDesks = floorPlanItems.filter(item => {
+    const desk = item.deskName ? deskMap.get(item.deskName) : undefined;
+    return desk && !bookedDeskIds.has(desk.id) && desk.is_active;
+  }).length;
+
+  const renderDeskItem = (item: FloorItemWithSeats) => {
+    const desk = item.deskName ? deskMap.get(item.deskName) : undefined;
+    const isBooked = desk ? bookedDeskIds.has(desk.id) : false;
+    const booking = desk ? bookingByDeskId.get(desk.id) : undefined;
+    const bookedBy = booking?.user?.full_name || booking?.user?.email || undefined;
+    
+    const handleClick = () => {
+      if (desk) {
+        onDeskClick(desk);
+      } else {
+        showToast({
+          type: 'info',
+          message: `This desk is not available for booking. Please contact an administrator.`,
+        });
+      }
+    };
+
+    const props = { item, desk, isBooked, bookedBy, onClick: handleClick };
+    const seats = item.seats || 1;
+
+    // Handle legacy chair type
+    if (item.type === 'chair') {
+      return <LegacyChairKonva key={item.id} {...props} />;
+    }
+
+    // Render based on seat count
+    switch (seats) {
+      case 1: return <SingleSeatDeskKonva key={item.id} {...props} />;
+      case 2: return <TwoSeatDeskKonva key={item.id} {...props} />;
+      case 3: return <ThreeSeatDeskKonva key={item.id} {...props} />;
+      case 4: return <FourSeatDeskKonva key={item.id} {...props} />;
+      case 6: return <SixSeatDeskKonva key={item.id} {...props} />;
+      default: return <LegacyDeskKonva key={item.id} {...props} />;
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="rounded-lg border bg-white p-6 shadow-sm">
+      <div className="rounded-xl border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-semibold text-gray-900">Office Seating Plan</h2>
         <div className="flex h-64 items-center justify-center">
-          <div className="text-lg text-gray-600">Loading floor plan...</div>
-            </div>
-          </div>
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-cyan-200 border-t-cyan-600"></div>
+        </div>
+      </div>
     );
   }
 
   if (!hasFloorPlan || floorPlanItems.length === 0) {
     return (
-      <div className="rounded-lg border bg-white p-6 shadow-sm">
+      <div className="rounded-xl border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-semibold text-gray-900">Office Seating Plan</h2>
-        <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-8 text-center">
-          <p className="text-yellow-800 font-medium">No floor plan available for this location</p>
-          <p className="text-yellow-700 text-sm mt-2">Please contact an administrator to set up the floor plan</p>
+        <div className="rounded-xl bg-amber-50 border border-amber-200 p-8 text-center">
+          <p className="text-amber-800 font-medium">No floor plan available for this location</p>
+          <p className="text-amber-700 text-sm mt-2">Please contact an administrator to set up the floor plan</p>
         </div>
-    </div>
-  );
+      </div>
+    );
   }
 
   return (
-    <div className="rounded-lg border bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-xl font-semibold text-gray-900">Office Seating Plan</h2>
+    <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-gray-900">Office Seating Plan</h2>
+        <div className="flex items-center gap-4 text-sm">
+          <span className="flex items-center gap-2 rounded-full bg-cyan-100 px-3 py-1">
+            <span className="font-medium text-cyan-700">{floorPlanItems.length} Desks</span>
+          </span>
+          <span className="flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1">
+            <span className="font-medium text-blue-700">{totalSeats} Seats</span>
+          </span>
+          <span className="flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1">
+            <span className="font-medium text-emerald-700">{availableDesks} Available</span>
+          </span>
+        </div>
+      </div>
       
       {/* Canvas Floor Plan */}
       <div
         ref={canvasContainerRef}
-        className="bg-gray-100 rounded-lg p-2 sm:p-4 overflow-auto"
+        className="bg-gray-100 rounded-xl p-2 sm:p-4 overflow-auto"
+        style={{ maxHeight: '600px' }}
       >
         <Stage
           width={1800}
@@ -328,89 +498,41 @@ export function SeatingPlan({ desks, bookings, onDeskClick, selectedLocation }: 
           <Layer>
             {/* Grid background */}
             {Array.from({ length: 36 }).map((_, i) => (
-              <Rect
-                key={`v-${i}`}
-                x={i * 50}
-                y={0}
-                width={1}
-                height={900}
-                fill="#e5e7eb"
-              />
+              <Rect key={`v-${i}`} x={i * 50} y={0} width={1} height={900} fill="#e5e7eb" />
             ))}
             {Array.from({ length: 18 }).map((_, i) => (
-              <Rect
-                key={`h-${i}`}
-                x={0}
-                y={i * 50}
-                width={1800}
-                height={1}
-                fill="#e5e7eb"
-              />
+              <Rect key={`h-${i}`} x={0} y={i * 50} width={1800} height={1} fill="#e5e7eb" />
             ))}
 
             {/* Render floor plan items */}
-            {floorPlanItems.map((item) => {
-              const desk = item.deskName ? deskMap.get(item.deskName) : undefined;
-              const isBooked = desk ? bookedDeskIds.has(desk.id) : false;
-              const booking = desk ? bookingByDeskId.get(desk.id) : undefined;
-              const bookedBy =
-                booking?.user?.full_name || booking?.user?.email || undefined;
-              
-              const handleClick = () => {
-                if (desk) {
-                  onDeskClick(desk);
-                } else {
-                  showToast({
-                    type: 'info',
-                    message: `This ${item.type} is not available for booking. Please contact an administrator.`,
-                  });
-                }
-              };
-              
-              if (item.type === 'desk') {
-                return (
-                  <DeskKonva
-                    key={item.id}
-                    item={item}
-                    desk={desk}
-                    isBooked={isBooked}
-                    bookedBy={bookedBy}
-                    onClick={handleClick}
-                  />
-                );
-              } else {
-                return (
-                  <ChairKonva
-                    key={item.id}
-                    item={item}
-                    desk={desk}
-                    isBooked={isBooked}
-                    bookedBy={bookedBy}
-                    onClick={handleClick}
-                  />
-                );
-              }
-            })}
+            {floorPlanItems.map(item => renderDeskItem(item))}
           </Layer>
         </Stage>
       </div>
 
       {/* Legend */}
-      <div className="mt-6 flex items-center justify-center gap-6 text-sm">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm">
         <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded bg-blue-400 border-2 border-blue-600"></div>
-          <span>Available</span>
+          <div className="w-8 h-6 bg-stone-400 rounded border-2 border-cyan-500"></div>
+          <span className="text-gray-600">Available</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded bg-gray-400 border-2 border-gray-600"></div>
-          <span>Booked</span>
+          <div className="w-8 h-6 bg-gray-300 rounded border border-gray-400"></div>
+          <span className="text-gray-600">Booked</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded bg-red-400 border-2 border-red-600"></div>
-          <span>Inactive</span>
+          <div className="w-8 h-6 bg-red-300 rounded border border-red-400"></div>
+          <span className="text-gray-600">Inactive</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+          <span className="text-gray-600">Chair/Seat</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
+          <span className="text-gray-600">Seat Count</span>
         </div>
       </div>
     </div>
   );
 }
-

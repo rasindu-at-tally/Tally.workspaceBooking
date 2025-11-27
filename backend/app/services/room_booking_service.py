@@ -248,7 +248,7 @@ class RoomBookingService:
             RoomBooking,
             MeetingRoom.room_name,
             MeetingRoom.room_number,
-            MeetingRoom.floor,
+            MeetingRoom.location,
             User.full_name,
             User.email
         ).join(
@@ -270,12 +270,12 @@ class RoomBookingService:
         
         # Convert to dict with details
         bookings_with_details = []
-        for booking, room_name, room_number, floor, user_name, user_email in results:
+        for booking, room_name, room_number, location, user_name, user_email in results:
             booking_dict = {
                 **booking.__dict__,
                 'room_name': room_name,
                 'room_number': room_number,
-                'floor': floor,
+                'location': location,
                 'user_name': user_name,
                 'user_email': user_email
             }

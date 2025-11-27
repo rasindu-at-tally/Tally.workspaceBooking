@@ -1,6 +1,6 @@
 """MS Teams Integration API endpoints"""
 from typing import List
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
@@ -34,38 +34,54 @@ def connect_teams(
             detail="Microsoft Teams integration is not configured. Demo mode is available."
         )
     
-    auth_url = ms_graph.get_auth_url()
+    # Pass user_id as state parameter so callback can identify the user
+    auth_url = ms_graph.get_auth_url(state=str(current_user.id))
     return {"auth_url": auth_url}
 
 
 @router.get("/callback")
 def teams_callback(
     code: str = Query(...),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    state: str = Query(None),  # state contains the user_id passed during auth
+    db: Session = Depends(get_db)
 ):
-    """Handle MS Teams OAuth callback"""
+    """Handle MS Teams OAuth callback - No auth required as this is called by Microsoft redirect"""
     if not code:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Authorization code not provided"
-        )
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
+        return RedirectResponse(url=f"{frontend_url}/teams?error=no_code")
     
     ms_graph = MSGraphService()
     result = ms_graph.get_token_from_code(code)
     
     if 'access_token' not in result:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Failed to authenticate with Microsoft Teams"
-        )
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
+        return RedirectResponse(url=f"{frontend_url}/teams?error=auth_failed")
+    
+    # Get user_id from state parameter (passed during auth initiation)
+    user_id = state
+    if not user_id:
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
+        return RedirectResponse(url=f"{frontend_url}/teams?error=no_state")
+    
+    # Verify user exists
+    from uuid import UUID
+    try:
+        user_uuid = UUID(user_id)
+    except ValueError:
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
+        return RedirectResponse(url=f"{frontend_url}/teams?error=invalid_user")
+    
+    user = db.query(User).filter(User.id == user_uuid).first()
+    if not user:
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
+        return RedirectResponse(url=f"{frontend_url}/teams?error=user_not_found")
     
     # Store tokens in database
-    expires_at = datetime.utcnow() + timedelta(seconds=result.get('expires_in', 3600))
+    expires_at = datetime.now(timezone.utc) + timedelta(seconds=result.get('expires_in', 3600))
     
     # Check if token already exists
     existing_token = db.query(MSTeamsToken).filter(
-        MSTeamsToken.user_id == current_user.id
+        MSTeamsToken.user_id == user_uuid
     ).first()
     
     if existing_token:
@@ -73,11 +89,11 @@ def teams_callback(
         existing_token.access_token = result['access_token']
         existing_token.refresh_token = result.get('refresh_token', '')
         existing_token.token_expires_at = expires_at
-        existing_token.updated_at = datetime.utcnow()
+        existing_token.updated_at = datetime.now(timezone.utc)
     else:
         # Create new token
         new_token = MSTeamsToken(
-            user_id=current_user.id,
+            user_id=user_uuid,
             access_token=result['access_token'],
             refresh_token=result.get('refresh_token', ''),
             token_expires_at=expires_at
@@ -89,11 +105,11 @@ def teams_callback(
     # Log audit
     AuditService.log_action(
         db=db,
-        user_id=current_user.id,
+        user_id=user_uuid,
         action="CONNECT_MS_TEAMS",
         entity_type="ms_teams_token",
-        entity_id=str(current_user.id),
-        details="Connected Microsoft Teams account"
+        entity_id=user_uuid,
+        metadata={"action": "connected"}
     )
     
     # Redirect to frontend success page (Teams meetings page)
@@ -118,7 +134,7 @@ def get_teams_status(
         }
     
     # Check if token is expired
-    is_expired = token.token_expires_at and token.token_expires_at < datetime.utcnow()
+    is_expired = token.token_expires_at and token.token_expires_at < datetime.now(timezone.utc)
     
     return {
         "connected": True,
@@ -148,8 +164,8 @@ def disconnect_teams(
             user_id=current_user.id,
             action="DISCONNECT_MS_TEAMS",
             entity_type="ms_teams_token",
-            entity_id=str(current_user.id),
-            details="Disconnected Microsoft Teams account"
+            entity_id=current_user.id,
+            metadata={"action": "disconnected"}
         )
     
     return {"message": "Disconnected successfully"}
@@ -182,13 +198,13 @@ def get_todays_meetings(
         )
     
     # Check if token is expired
-    if token.token_expires_at and token.token_expires_at < datetime.utcnow():
+    if token.token_expires_at and token.token_expires_at < datetime.now(timezone.utc):
         # Try to refresh token
         if token.refresh_token:
             result = ms_graph.refresh_token(token.refresh_token)
             if 'access_token' in result:
                 token.access_token = result['access_token']
-                token.token_expires_at = datetime.utcnow() + timedelta(seconds=result.get('expires_in', 3600))
+                token.token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=result.get('expires_in', 3600))
                 db.commit()
             else:
                 raise HTTPException(
@@ -227,12 +243,12 @@ def get_meeting_recommendations(
             meetings = get_mock_meetings()
         else:
             # Check if token is expired
-            if token.token_expires_at and token.token_expires_at < datetime.utcnow():
+            if token.token_expires_at and token.token_expires_at < datetime.now(timezone.utc):
                 if token.refresh_token:
                     result = ms_graph.refresh_token(token.refresh_token)
                     if 'access_token' in result:
                         token.access_token = result['access_token']
-                        token.token_expires_at = datetime.utcnow() + timedelta(seconds=result.get('expires_in', 3600))
+                        token.token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=result.get('expires_in', 3600))
                         db.commit()
                         meetings = ms_graph.get_todays_meetings(token.access_token)
                     else:

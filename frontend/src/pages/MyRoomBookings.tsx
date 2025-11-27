@@ -63,7 +63,7 @@ export default function MyRoomBookings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Room Bookings</h1>
+          <h1 className="text-3xl font-bold text-cyan-600">My Room Bookings</h1>
           <p className="mt-2 text-gray-600">View and manage your meeting room reservations</p>
         </div>
       </div>
@@ -118,7 +118,7 @@ export default function MyRoomBookings() {
                           {booking.room_name || 'N/A'}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {booking.room_number} • {booking.floor}
+                          {booking.room_number} • {booking.location}
                         </div>
                       </div>
                     </td>

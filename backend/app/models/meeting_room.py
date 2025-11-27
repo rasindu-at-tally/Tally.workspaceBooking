@@ -14,7 +14,7 @@ class MeetingRoom(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     room_name = Column(String(100), nullable=False, unique=True)
     room_number = Column(String(50), nullable=False, unique=True)
-    floor = Column(String(50), nullable=False, index=True)
+    location = Column(String(50), nullable=False, index=True)
     capacity = Column(Integer, nullable=False)
     
     # Amenities

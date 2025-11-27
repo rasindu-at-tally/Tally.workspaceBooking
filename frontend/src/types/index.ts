@@ -108,7 +108,7 @@ export interface MeetingRoom {
   id: string;
   room_name: string;
   room_number: string;
-  floor: string;
+  location: string;
   capacity: number;
   has_projector: boolean;
   has_video_conf: boolean;
@@ -123,7 +123,7 @@ export interface MeetingRoom {
 export interface CreateMeetingRoomRequest {
   room_name: string;
   room_number: string;
-  floor: string;
+  location: string;
   capacity: number;
   has_projector?: boolean;
   has_video_conf?: boolean;
@@ -135,7 +135,7 @@ export interface CreateMeetingRoomRequest {
 export interface UpdateMeetingRoomRequest {
   room_name?: string;
   room_number?: string;
-  floor?: string;
+  location?: string;
   capacity?: number;
   has_projector?: boolean;
   has_video_conf?: boolean;
@@ -146,7 +146,7 @@ export interface UpdateMeetingRoomRequest {
 }
 
 export interface MeetingRoomFilter {
-  floor?: string;
+  location?: string;
   min_capacity?: number;
   has_projector?: boolean;
   has_video_conf?: boolean;
@@ -175,7 +175,7 @@ export interface RoomBooking {
 export interface RoomBookingWithDetails extends RoomBooking {
   room_name?: string;
   room_number?: string;
-  floor?: string;
+  location?: string;
   user_name?: string;
   user_email?: string;
 }

@@ -71,67 +71,8 @@ def seed_database():
         
         print("✓ Created 2 admin users and 3 regular users")
         
-        # Create desks for two locations based on the seating plan image
-        # Location 1: Sydney Office
-        sydney_desks = []
-        
-        # Top left - 3x 6-seater tables
-        for i in range(3):
-            desk = Desk(
-                id=uuid.uuid4(),
-                name=f"SYD-TL-{i+1}",
-                location="Sydney Office",
-                position_x=1,
-                position_y=i,
-                desk_type="6-seater",
-                description="6-person desk in top left area",
-                is_active=True,
-            )
-            sydney_desks.append(desk)
-        
-        # Center left - 2x 4-seater tables
-        for i in range(2):
-            desk = Desk(
-                id=uuid.uuid4(),
-                name=f"SYD-CL-{i+1}",
-                location="Sydney Office",
-                position_x=2,
-                position_y=i,
-                desk_type="4-seater",
-                description="4-person desk in center left area",
-                is_active=True,
-            )
-            sydney_desks.append(desk)
-        
-        # Center right - 2x 4-seater tables
-        for i in range(2):
-            desk = Desk(
-                id=uuid.uuid4(),
-                name=f"SYD-CR-{i+1}",
-                location="Sydney Office",
-                position_x=3,
-                position_y=i,
-                desk_type="4-seater",
-                description="4-person desk in center right area",
-                is_active=True,
-            )
-            sydney_desks.append(desk)
-        
-        # Top right - 3x 6-seater tables
-        for i in range(3):
-            desk = Desk(
-                id=uuid.uuid4(),
-                name=f"SYD-TR-{i+1}",
-                location="Sydney Office",
-                position_x=4,
-                position_y=i,
-                desk_type="6-seater",
-                description="6-person desk in top right area",
-                is_active=True,
-            )
-            sydney_desks.append(desk)
-        
-        # Location 2: Melbourne Office (similar layout)
+        # Create desks for four locations
+        # Location 1: Melbourne Office
         melbourne_desks = []
         
         # Top left - 3x 6-seater tables
@@ -190,101 +131,188 @@ def seed_database():
             )
             melbourne_desks.append(desk)
         
-        all_desks = sydney_desks + melbourne_desks
+        # Location 2: Brisbane Office
+        brisbane_desks = []
+        
+        for i in range(3):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"BRI-TL-{i+1}",
+                location="Brisbane Office",
+                position_x=1,
+                position_y=i,
+                desk_type="6-seater",
+                description="6-person desk in top left area",
+                is_active=True,
+            )
+            brisbane_desks.append(desk)
+        
+        for i in range(2):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"BRI-CL-{i+1}",
+                location="Brisbane Office",
+                position_x=2,
+                position_y=i,
+                desk_type="4-seater",
+                description="4-person desk in center left area",
+                is_active=True,
+            )
+            brisbane_desks.append(desk)
+        
+        for i in range(2):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"BRI-CR-{i+1}",
+                location="Brisbane Office",
+                position_x=3,
+                position_y=i,
+                desk_type="4-seater",
+                description="4-person desk in center right area",
+                is_active=True,
+            )
+            brisbane_desks.append(desk)
+        
+        for i in range(3):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"BRI-TR-{i+1}",
+                location="Brisbane Office",
+                position_x=4,
+                position_y=i,
+                desk_type="6-seater",
+                description="6-person desk in top right area",
+                is_active=True,
+            )
+            brisbane_desks.append(desk)
+        
+        # Location 3: Auckland Office
+        auckland_desks = []
+        
+        for i in range(3):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"AKL-TL-{i+1}",
+                location="Auckland Office",
+                position_x=1,
+                position_y=i,
+                desk_type="6-seater",
+                description="6-person desk in top left area",
+                is_active=True,
+            )
+            auckland_desks.append(desk)
+        
+        for i in range(2):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"AKL-CL-{i+1}",
+                location="Auckland Office",
+                position_x=2,
+                position_y=i,
+                desk_type="4-seater",
+                description="4-person desk in center left area",
+                is_active=True,
+            )
+            auckland_desks.append(desk)
+        
+        for i in range(2):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"AKL-CR-{i+1}",
+                location="Auckland Office",
+                position_x=3,
+                position_y=i,
+                desk_type="4-seater",
+                description="4-person desk in center right area",
+                is_active=True,
+            )
+            auckland_desks.append(desk)
+        
+        for i in range(3):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"AKL-TR-{i+1}",
+                location="Auckland Office",
+                position_x=4,
+                position_y=i,
+                desk_type="6-seater",
+                description="6-person desk in top right area",
+                is_active=True,
+            )
+            auckland_desks.append(desk)
+        
+        # Location 4: Hyderabad Office
+        hyderabad_desks = []
+        
+        for i in range(3):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"HYD-TL-{i+1}",
+                location="Hyderabad Office",
+                position_x=1,
+                position_y=i,
+                desk_type="6-seater",
+                description="6-person desk in top left area",
+                is_active=True,
+            )
+            hyderabad_desks.append(desk)
+        
+        for i in range(2):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"HYD-CL-{i+1}",
+                location="Hyderabad Office",
+                position_x=2,
+                position_y=i,
+                desk_type="4-seater",
+                description="4-person desk in center left area",
+                is_active=True,
+            )
+            hyderabad_desks.append(desk)
+        
+        for i in range(2):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"HYD-CR-{i+1}",
+                location="Hyderabad Office",
+                position_x=3,
+                position_y=i,
+                desk_type="4-seater",
+                description="4-person desk in center right area",
+                is_active=True,
+            )
+            hyderabad_desks.append(desk)
+        
+        for i in range(3):
+            desk = Desk(
+                id=uuid.uuid4(),
+                name=f"HYD-TR-{i+1}",
+                location="Hyderabad Office",
+                position_x=4,
+                position_y=i,
+                desk_type="6-seater",
+                description="6-person desk in top right area",
+                is_active=True,
+            )
+            hyderabad_desks.append(desk)
+        
+        all_desks = melbourne_desks + brisbane_desks + auckland_desks + hyderabad_desks
         db.add_all(all_desks)
         db.flush()
         
-        print(f"✓ Created {len(sydney_desks)} desks in Sydney Office")
         print(f"✓ Created {len(melbourne_desks)} desks in Melbourne Office")
+        print(f"✓ Created {len(brisbane_desks)} desks in Brisbane Office")
+        print(f"✓ Created {len(auckland_desks)} desks in Auckland Office")
+        print(f"✓ Created {len(hyderabad_desks)} desks in Hyderabad Office")
         
         # Create meeting rooms
         meeting_rooms = [
-            # Sydney Office - Floor 1
-            MeetingRoom(
-                id=uuid.uuid4(),
-                room_name="Conference Room A",
-                room_number="SYD-MR-1A",
-                floor="Floor 1",
-                capacity=8,
-                has_projector=True,
-                has_video_conf=True,
-                has_whiteboard=True,
-                has_screen_share=True,
-                description="Large conference room with full AV equipment",
-                is_active=True
-            ),
-            MeetingRoom(
-                id=uuid.uuid4(),
-                room_name="Huddle Space 1",
-                room_number="SYD-MR-1B",
-                floor="Floor 1",
-                capacity=4,
-                has_projector=False,
-                has_video_conf=True,
-                has_whiteboard=True,
-                has_screen_share=False,
-                description="Small meeting space for quick discussions",
-                is_active=True
-            ),
-            MeetingRoom(
-                id=uuid.uuid4(),
-                room_name="Board Room",
-                room_number="SYD-MR-1C",
-                floor="Floor 1",
-                capacity=16,
-                has_projector=True,
-                has_video_conf=True,
-                has_whiteboard=True,
-                has_screen_share=True,
-                description="Executive board room for large meetings",
-                is_active=True
-            ),
-            # Sydney Office - Floor 2
-            MeetingRoom(
-                id=uuid.uuid4(),
-                room_name="Meeting Room Alpha",
-                room_number="SYD-MR-2A",
-                floor="Floor 2",
-                capacity=6,
-                has_projector=True,
-                has_video_conf=True,
-                has_whiteboard=True,
-                has_screen_share=True,
-                description="Medium-sized meeting room",
-                is_active=True
-            ),
-            MeetingRoom(
-                id=uuid.uuid4(),
-                room_name="Collaboration Space",
-                room_number="SYD-MR-2B",
-                floor="Floor 2",
-                capacity=10,
-                has_projector=True,
-                has_video_conf=True,
-                has_whiteboard=True,
-                has_screen_share=True,
-                description="Open collaboration space",
-                is_active=True
-            ),
-            MeetingRoom(
-                id=uuid.uuid4(),
-                room_name="Small Meeting Room",
-                room_number="SYD-MR-2C",
-                floor="Floor 2",
-                capacity=4,
-                has_projector=False,
-                has_video_conf=False,
-                has_whiteboard=True,
-                has_screen_share=False,
-                description="Intimate meeting space",
-                is_active=True
-            ),
-            # Melbourne Office - Floor 1
+            # Melbourne Office
             MeetingRoom(
                 id=uuid.uuid4(),
                 room_name="Executive Suite",
                 room_number="MEL-MR-1A",
-                floor="Floor 1",
+                location="Melbourne",
                 capacity=12,
                 has_projector=True,
                 has_video_conf=True,
@@ -297,7 +325,7 @@ def seed_database():
                 id=uuid.uuid4(),
                 room_name="Team Room Beta",
                 room_number="MEL-MR-1B",
-                floor="Floor 1",
+                location="Melbourne",
                 capacity=8,
                 has_projector=True,
                 has_video_conf=True,
@@ -310,7 +338,7 @@ def seed_database():
                 id=uuid.uuid4(),
                 room_name="Focus Room",
                 room_number="MEL-MR-1C",
-                floor="Floor 1",
+                location="Melbourne",
                 capacity=2,
                 has_projector=False,
                 has_video_conf=False,
@@ -323,13 +351,146 @@ def seed_database():
                 id=uuid.uuid4(),
                 room_name="Innovation Lab",
                 room_number="MEL-MR-1D",
-                floor="Floor 1",
+                location="Melbourne",
                 capacity=20,
                 has_projector=True,
                 has_video_conf=True,
                 has_whiteboard=True,
                 has_screen_share=True,
                 description="Large creative space for workshops",
+                is_active=True
+            ),
+            # Brisbane Office
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Conference Room A",
+                room_number="BRI-MR-1A",
+                location="Brisbane",
+                capacity=8,
+                has_projector=True,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=True,
+                description="Large conference room with full AV equipment",
+                is_active=True
+            ),
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Huddle Space 1",
+                room_number="BRI-MR-1B",
+                location="Brisbane",
+                capacity=4,
+                has_projector=False,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=False,
+                description="Small meeting space for quick discussions",
+                is_active=True
+            ),
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Board Room",
+                room_number="BRI-MR-1C",
+                location="Brisbane",
+                capacity=16,
+                has_projector=True,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=True,
+                description="Executive board room for large meetings",
+                is_active=True
+            ),
+            # Auckland Office
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Meeting Room Alpha",
+                room_number="AKL-MR-1A",
+                location="Auckland",
+                capacity=6,
+                has_projector=True,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=True,
+                description="Medium-sized meeting room",
+                is_active=True
+            ),
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Collaboration Space",
+                room_number="AKL-MR-1B",
+                location="Auckland",
+                capacity=10,
+                has_projector=True,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=True,
+                description="Open collaboration space",
+                is_active=True
+            ),
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Small Meeting Room",
+                room_number="AKL-MR-1C",
+                location="Auckland",
+                capacity=4,
+                has_projector=False,
+                has_video_conf=False,
+                has_whiteboard=True,
+                has_screen_share=False,
+                description="Intimate meeting space",
+                is_active=True
+            ),
+            # Hyderabad Office
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Tech Hub",
+                room_number="HYD-MR-1A",
+                location="Hyderabad",
+                capacity=14,
+                has_projector=True,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=True,
+                description="Technology-focused meeting room",
+                is_active=True
+            ),
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Brainstorm Room",
+                room_number="HYD-MR-1B",
+                location="Hyderabad",
+                capacity=8,
+                has_projector=True,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=True,
+                description="Creative brainstorming space",
+                is_active=True
+            ),
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Quick Connect",
+                room_number="HYD-MR-1C",
+                location="Hyderabad",
+                capacity=4,
+                has_projector=False,
+                has_video_conf=True,
+                has_whiteboard=False,
+                has_screen_share=True,
+                description="Video conferencing room",
+                is_active=True
+            ),
+            MeetingRoom(
+                id=uuid.uuid4(),
+                room_name="Training Center",
+                room_number="HYD-MR-1D",
+                location="Hyderabad",
+                capacity=25,
+                has_projector=True,
+                has_video_conf=True,
+                has_whiteboard=True,
+                has_screen_share=True,
+                description="Large training and workshop space",
                 is_active=True
             )
         ]

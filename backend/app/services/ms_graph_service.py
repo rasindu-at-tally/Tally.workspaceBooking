@@ -46,7 +46,7 @@ class MSGraphService:
         """Check if MS Graph is properly configured (values provided in env)."""
         return bool(self.CLIENT_ID and self.CLIENT_SECRET)
     
-    def get_auth_url(self) -> str:
+    def get_auth_url(self, state: str = None) -> str:
         """Get authorization URL for OAuth flow"""
         app = msal.ConfidentialClientApplication(
             self.client_id,
@@ -56,7 +56,8 @@ class MSGraphService:
         
         auth_url = app.get_authorization_request_url(
             scopes=self.scope,
-            redirect_uri=self.redirect_uri
+            redirect_uri=self.redirect_uri,
+            state=state
         )
         return auth_url
     
@@ -109,7 +110,7 @@ class MSGraphService:
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None
     ) -> List[Dict]:
-        """Get user's calendar events for a date range"""
+        """Get user's calendar events for a date range using calendarView endpoint"""
         if start_date is None:
             start_date = datetime.now()
         if end_date is None:
@@ -117,18 +118,21 @@ class MSGraphService:
         
         headers = {'Authorization': f'Bearer {access_token}'}
         
-        # Format dates for Microsoft Graph API
-        start_str = start_date.strftime('%Y-%m-%dT00:00:00Z')
-        end_str = end_date.strftime('%Y-%m-%dT23:59:59Z')
+        # Format dates for Microsoft Graph API (ISO 8601 format)
+        start_str = start_date.strftime('%Y-%m-%dT00:00:00')
+        end_str = end_date.strftime('%Y-%m-%dT23:59:59')
         
+        # Use calendarView endpoint - better for getting events in a time range
+        # It automatically expands recurring events and handles time zones
         params = {
+            'startDateTime': start_str,
+            'endDateTime': end_str,
             '$select': 'subject,start,end,location,attendees,isOnlineMeeting,onlineMeetingUrl',
-            '$filter': f"start/dateTime ge '{start_str}' and end/dateTime le '{end_str}'",
             '$orderby': 'start/dateTime'
         }
         
         response = requests.get(
-            f'{self.GRAPH_API_ENDPOINT}/me/calendar/events',
+            f'{self.GRAPH_API_ENDPOINT}/me/calendarView',
             headers=headers,
             params=params
         )

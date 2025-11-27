@@ -38,7 +38,7 @@ export function Dashboard() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Book a Desk</h1>
+          <h1 className="text-3xl font-bold text-cyan-600">Book a Desk</h1>
           <p className="mt-2 text-gray-600">
             Select a date and location to view available desks
           </p>

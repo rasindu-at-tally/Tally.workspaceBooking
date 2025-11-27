@@ -66,7 +66,7 @@ class RoomBookingWithDetails(RoomBookingResponse):
     """Schema for room booking with room and user details"""
     room_name: Optional[str] = None
     room_number: Optional[str] = None
-    floor: Optional[str] = None
+    location: Optional[str] = None
     user_name: Optional[str] = None
     user_email: Optional[str] = None
 
